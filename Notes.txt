@@ -4,6 +4,7 @@ https://github.com/ArthasMenethil-A/Delta-Robot-Trajectory-Planning/tree/main
 https://github.com/AtsushiSakai/PythonRobotics/blob/master/PathPlanning/QuinticPolynomialsPlanner/quintic_polynomials_planner.py
 https://github.com/petercorke/robotics-toolbox-python/blob/master/roboticstoolbox/tools/trajectory.py
 https://github.com/novice1011/trajectory-planning
+https://github.com/Sarrasor/RoboticManipulators/tree/main/utils
 
 # PDF
 https://epub.jku.at/obvulihs/download/pdf/5841037?originalFilename=true
@@ -13,3 +14,4 @@ https://medium.com/geekculture/trajectory-generation-in-c-da36521128aa
 
 # Book
 https://github.com/petercorke/RVC3-python/tree/main
+http://hades.mech.northwestern.edu/images/7/7f/MR.pdf
