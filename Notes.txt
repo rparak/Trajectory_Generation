@@ -10,3 +10,6 @@ https://epub.jku.at/obvulihs/download/pdf/5841037?originalFilename=true
 
 # Articles
 https://medium.com/geekculture/trajectory-generation-in-c-da36521128aa
+
+# Book
+https://github.com/petercorke/RVC3-python/tree/main
