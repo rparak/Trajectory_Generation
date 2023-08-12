@@ -34,12 +34,15 @@ def main():
     # Locate the path to the project folder.
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
-    thetas_0 = Mathematics.Degree_To_Radian(np.array([ 0.0, 0.0], dtype=np.float32))
-    thetas_1 = Mathematics.Degree_To_Radian(np.array([90.0, -90.0], dtype=np.float32))
+    s_0 = [{'Position': Mathematics.Degree_To_Radian(-10.0), 'Velocity': 0.0, 'Acceleration': 0.0},
+           {'Position': Mathematics.Degree_To_Radian(10.0), 'Velocity': 0.0, 'Acceleration': 0.0},
+           {'Position': Mathematics.Degree_To_Radian(-45.0), 'Velocity': 0.0, 'Acceleration': 0.0}]
+    s_f = [{'Position': Mathematics.Degree_To_Radian(90.0), 'Velocity': 0.0, 'Acceleration': 0.0},
+           {'Position': Mathematics.Degree_To_Radian(-90.0), 'Velocity': 0.0, 'Acceleration': 0.0},
+           {'Position': Mathematics.Degree_To_Radian(45.0), 'Velocity': 0.0, 'Acceleration': 0.0}]
 
     Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(100)
-    (thetas_s, thetas_dot, thetas_ddot) = Polynomial_Cls.Generate(thetas_0, thetas_1)
-
+    
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
 
@@ -47,19 +50,21 @@ def main():
     _, ax = plt.subplots()
 
     # Visualization of ....
-    for i, thetas_s_i in enumerate(thetas_s.T):
-        ax.plot(Polynomial_Cls.t, thetas_s_i, '.--', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, label=r'$\theta_{%d}$' % (i + 1))
+    for i, (s_0_i, s_f_i) in enumerate(zip(s_0, s_f)):
+        # ...
+        (_, s_dot, _) = Polynomial_Cls.Generate(s_0_i, s_f_i)
+
+        # ...
+        ax.plot(Polynomial_Cls.t, s_dot, '.--', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, label=r'$\dot{s}_{%d}(t)$' % (i + 1))
 
     # Set parameters of the graph (plot).
-    ax.set_title(f'Trajectory Polynomial Profile: Position s(t)', fontsize=25, pad=25.0)
+    ax.set_title(r'Trajectory Polynomial Profile: Velocity', fontsize=25, pad=25.0)
     #   Set the x ticks.
     ax.set_xticks(np.arange(np.min(Polynomial_Cls.t) - 0.1, np.max(Polynomial_Cls.t) + 0.1, 0.1))
-    #   Set the y ticks.
-    ax.set_yticks(np.arange(np.min(np.append(thetas_0, thetas_1)) - 0.1, np.max(np.append(thetas_0, thetas_1)) + 0.1, 0.314))
     #   Label
-    ax.set_xlabel(r'Normalized Time ', fontsize=15, labelpad=10)
-    ax.set_ylabel(r'$\theta_{i}$ in radians', fontsize=15, labelpad=10) 
+    ax.set_xlabel(r't', fontsize=15, labelpad=10)
+    ax.set_ylabel(r'$\dot{s}(t)$', fontsize=15, labelpad=10) 
     #   Set parameters of the visualization.
     ax.grid(which='major', linewidth = 0.15, linestyle = '--')
     # Get handles and labels for the legend.
@@ -74,6 +79,7 @@ def main():
     else:
         # Show the result.
         plt.show()
+
 
 if __name__ == "__main__":
     sys.exit(main())
