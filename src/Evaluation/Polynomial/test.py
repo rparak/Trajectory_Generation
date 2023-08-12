@@ -13,7 +13,7 @@ import scienceplots
 import matplotlib.pyplot as plt
 # Custom Script:
 #   ../Lib/Trajectory/Core
-import Lib.Trajectory.Core as Trajectory
+import Lib.Trajectory.Profile
 # Custom Script:
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
@@ -34,11 +34,11 @@ def main():
     # Locate the path to the project folder.
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
-    thetas_0 = Mathematics.Degree_To_Radian(np.array([ 0.0], dtype=np.float32))
-    thetas_1 = Mathematics.Degree_To_Radian(np.array([90.0], dtype=np.float32))
+    thetas_0 = Mathematics.Degree_To_Radian(np.array([ 0.0, 0.0], dtype=np.float32))
+    thetas_1 = Mathematics.Degree_To_Radian(np.array([90.0, -90.0], dtype=np.float32))
 
-    Polynomial_Cls = Trajectory.Polynomial_Profile_Cls(thetas_0, thetas_1, 100)
-    Polynomial_Cls.Generate()
+    Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(100)
+    (thetas_s, thetas_dot, thetas_ddot) = Polynomial_Cls.Generate(thetas_0, thetas_1)
 
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -47,12 +47,12 @@ def main():
     _, ax = plt.subplots()
 
     # Visualization of ....
-    for i, s_theta_i in enumerate(Polynomial_Cls.s.T):
-        ax.plot(Polynomial_Cls.t, s_theta_i, '.--', linewidth=1.0, markersize = 3.0, 
+    for i, thetas_s_i in enumerate(thetas_s.T):
+        ax.plot(Polynomial_Cls.t, thetas_s_i, '.--', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, label=r'$\theta_{%d}$' % (i + 1))
 
     # Set parameters of the graph (plot).
-    ax.set_title(f'Trajectory Polynomial Profile: Position', fontsize=25, pad=25.0)
+    ax.set_title(f'Trajectory Polynomial Profile: Position s(t)', fontsize=25, pad=25.0)
     #   Set the x ticks.
     ax.set_xticks(np.arange(np.min(Polynomial_Cls.t) - 0.1, np.max(Polynomial_Cls.t) + 0.1, 0.1))
     #   Set the y ticks.

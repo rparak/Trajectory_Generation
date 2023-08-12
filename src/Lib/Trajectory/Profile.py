@@ -17,19 +17,11 @@ Description:
 CONST_T_0 = 0.0
 CONST_T_1 = 1.0
 
-class Polynomial_Profile_Cls(object):
-    def __init__(self, s_0: tp.List[float], s_1: tp.List[float], N: int) -> None:
+class Polynomial_Cls(object):
+    def __init__(self, N: int) -> None:
         # The value of the time must be within the interval: 
         #   0.0 <= t <= 1.0
         self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
-
-        self.__s_0 = s_0
-        self.__s_1 = s_1
-
-        # Initialization of other class parameters.
-        self.__s = np.zeros((N, s_0.size), dtype=np.float32)
-        self.__s_dot  = self.__s.copy()
-        self.__s_ddot = self.__s.copy()
 
     @property
     def t(self) -> tp.List[float]:
@@ -57,18 +49,6 @@ class Polynomial_Profile_Cls(object):
                 
         return self.__t.shape[0]
     
-    @property
-    def s(self): 
-        return self.__s
-    
-    @property
-    def s_dot(self):
-        return self.__s_dot
-    
-    @property
-    def s_ddot(self):
-        return self.__s_ddot
-    
     def __Quintic_Polynomial(self, s_0, s_1):
         s_dot_0 = 0.0; s_dot_1 = 0.0
 
@@ -86,15 +66,18 @@ class Polynomial_Profile_Cls(object):
                 t @ np.array([0.0, 5.0 * A,  4.0 * B,  3.0 * C,     0.0,   E], dtype=np.float32),
                 t @ np.array([0.0,     0.0, 20.0 * A, 12.0 * B, 6.0 * C, 0.0], dtype=np.float32))
 
-    def Generate(self):
-        for i, (s_0_i, s_1_i) in enumerate(zip(self.__s_0, self.__s_1)):
+    def Generate(self, s_0, s_1):
+        # Initialization of the output varliables.
+        s = np.zeros((self.N, s_0.size), dtype=np.float32)
+        s_dot = s.copy(); s_ddot = s.copy()
+
+        for i, (s_0_i, s_1_i) in enumerate(zip(s_0, s_1)):
             # ...
-            (s, s_dot, s_ddot) = self.__Quintic_Polynomial(np.array(s_0_i, dtype=np.float32), 
-                                                           np.array(s_1_i, dtype=np.float32))
-            # ...
-            self.__s[:, i] = s; self.__s_dot[:, i] = s_dot; self.__s_ddot[:, i] = s_ddot
+            (s[:, i], s_dot[:, i], s_ddot[:, i]) = self.__Quintic_Polynomial(s_0_i, s_1_i)
+
+        return (s, s_dot, s_ddot)
     
-class Trapezoidal_Profile_Cls(object):
+class Trapezoidal_Cls(object):
     def __init__(self) -> None:
         pass
 
