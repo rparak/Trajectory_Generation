@@ -20,7 +20,32 @@ CONST_T_1 = 1.0
 class Polynomial_Cls(object):
     """
     Description:
-        ...
+        The specific class for generating the polynomial trajectory of degree 5 (quintic) from input constraints.
+
+        Note:
+            A polynomial of degree 5 (quintic) was chosen to obtain the acceleration.
+
+    Initialization of the Class:
+        Args:
+            (1) N [int]: The number of time points used to generate the polynomial trajectory.
+
+        Example:
+            Initialization:
+                # Assignment of the variables.
+                N = 100
+
+                # Initialization of the class.
+                Cls = Polynomial_Cls(Box)
+
+            Features:
+                # Properties of the class.
+                Cls.t
+                ...
+                Cls.N
+
+                # Functions of the class.
+                Cls.Generate({'Position':  0.0, 'Velocity': 0.0, 'Acceleration': 0.0},
+                             {'Position': 1.57, 'Velocity': 0.0, 'Acceleration': 0.0})
     """
             
     def __init__(self, N: int) -> None:
@@ -28,7 +53,8 @@ class Polynomial_Cls(object):
         #   0.0 <= t <= 1.0
         self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
 
-        self.__A  = self.__Quintic_Polynomial()
+        # Obtain the modified polynomial matrix of degree 5.
+        self.__X = self.__Quintic_Polynomial()
 
     @property
     def t(self) -> tp.List[float]:
@@ -37,7 +63,7 @@ class Polynomial_Cls(object):
            Get the time as an interval of values from 0 to 1.
         
         Returns:
-            (1) parameter [Vector<float> 1xn]: Time.
+            (1) parameter [Vector<float> 1xn]: Normalized time.
                                                 Note:
                                                     Where n is the number of points.
         """
@@ -56,95 +82,79 @@ class Polynomial_Cls(object):
                 
         return self.__t.shape[0]
     
-    def __Quintic_Polynomial(self):
+    def __Quintic_Polynomial(self) -> tp.List[tp.List[float]]:
         """
         Descrtiption:
-            Quintic Polynomial (5th degree)
+            Obtain the modified polynomial matrix of degree 5.
 
-            # http://oramosp.epizy.com/teaching/18/robotics/lectures/Topic7_Trajectory_Generation.pdf?i=1
-            # http://www.mnrlab.com/uploads/7/3/8/3/73833313/trajectory.pdf
-            # https://www.scribd.com/presentation/434786742/8-QUINTIC-and-LFSB-Trajectory-planning-20-Sep-2018Reference-Material-I-Quintic-Polynomial-Trajectory-pptx#
-            # https://www.youtube.com/watch?v=HqQBL6xcj4w
-            
-            s(t) = 
+            A polynomial of degree 5 (quintic) is defined as follows:
+                s(t) = c_{0} + c_{1}*t + c_{2}*t^2 + c_{3}*t^3 + c_{4}*t^4 + c_{5}*t^5
+
+            The quintic polynomial can be expressed by a system of 6 equations. These equations 
+            can be converted into a matrix, which we have called X.
+
+                X = [[1.0, t_0,    t_0**2,       t_0**3,        t_0**4,        t_0**5],
+                     [0.0, 1.0, 2.0 * t_0, 3.0 * t_0**2,  4.0 * t_0**3,  5.0 * t_0**4],
+                     [0.0, 0.0,       2.0,    6.0 * t_0, 12.0 * t_0**2, 20.0 * t_0**3],
+                     [1.0, t_f,    t_f**2,       t_f**3,        t_f**4,        t_f**5],
+                     [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
+                     [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]]
+
+            The X matrix has been modified to make the calculation as fast as possible.
+                Note:
+                    t_0 is always equal to 0.0, and t_f is always equal to 1.0 because we use 
+                    the normalized time, t.
+
+        Returns:
+            (1) parameter [Vector<float> 6x6]: Modified polynomial matrix of degree 5.
         """
         
-        t_0 = self.__t[0]; t_f = self.__t[-1]
+        return np.array([[1.0, 0.0, 0.0, 0.0,  0.0,  0.0],
+                         [0.0, 1.0, 0.0, 0.0,  0.0,  0.0],
+                         [0.0, 0.0, 2.0, 0.0,  0.0,  0.0],
+                         [1.0, 1.0, 1.0, 1.0,  1.0,  1.0],
+                         [0.0, 1.0, 2.0, 3.0,  4.0,  5.0],
+                         [0.0, 0.0, 2.0, 6.0, 12.0, 20.0]], dtype=np.float32)
 
-        return np.array([[1.0, t_0,    t_0**2,       t_0**3,        t_0**4,        t_0**5],
-                         [0.0, 1.0, 2.0 * t_0, 3.0 * t_0**2,  4.0 * t_0**3,  5.0 * t_0**4],
-                         [0.0, 0.0,       2.0,    6.0 * t_0, 12.0 * t_0**2, 20.0 * t_0**3],
-                         [1.0, t_f,    t_f**2,       t_f**3,        t_f**4,        t_f**5],
-                         [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
-                         [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]], dtype=np.float32)
-
-    def Generate(self, s_0, s_f):
+    def Generate(self, s_0: tp.Tuple[float, float, float], s_f: tp.Tuple[float, float, float]) -> tp.Tuple[tp.List[float], tp.List[float], 
+                                                                                                           tp.List[float]]:
         """
         Description:
-            ...
+            Generate position, velocity, and acceleration polynomial trajectories of degree 5.
+
+        Args:
+            (1, 2) s_0, s_f [Dictionary {'Position': float, 'Velocity': float,
+                                         'Acceleration': float}]: Initial and final constraint configuration.
+
+        Returns:
+            (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration polynomial trajectory of degree 5.
         """
 
         # Initialization of the output varliables.
         s = np.zeros(self.N, dtype=np.float32)
         s_dot = s.copy(); s_ddot = s.copy()
 
-        # Find the coefficients of the polynomial of degree 5 (quintic).
-        #   Note:
-        #       The coefficients are of the form x^0 + x^1 + .. + x^n, 
-        #       where n is equal to 5.
-        C = np.linalg.inv(self.__A).dot(np.append(list(s_0.values()), 
-                                                  list(s_f.values())))
+        # Find the coefficients c_{0 .. 5} from the equation below.
+        #   Equation:
+        #       [c_{0 .. 5}] = X^(-1) * [s_0, s_f, s_dot_0, s_dot_f, s_ddot_0, s_ddot_f]
+        C = np.linalg.inv(self.__X) @ np.append(list(s_0.values()), 
+                                                list(s_f.values()))
         
         # Analytic expression (position):
-        #   s(t) = a_{0} + a_{1}*t + a_{2}*t^2 + a_{3}*t^3 + a_{4}*t^4 + a_{5}*t^5
+        #   s(t) = c_{0} + c_{1}*t + c_{2}*t^2 + c_{3}*t^3 + c_{4}*t^4 + c_{5}*t^5
         for i, C_i in enumerate(C):
             s[:] += (self.__t ** i) * C_i
         
         # Analytic expression (velocity):
-        #   s_dot(t) = a_{1} + 2*a_{2}*t + 3*a_{3}*t^2 + 4*a_{4}*t^3 + 5*a_{5}*t^4
-        for i, (C_i_dot, var_i) in enumerate(zip(C[1:], np.array([1.0, 2.0, 3.0, 4.0, 5.0], dtype=np.float32)), 
+        #   s_dot(t) = c_{1} + 2*c_{2}*t + 3*c_{3}*t^2 + 4*c_{4}*t^3 + 5*c_{5}*t^4
+        for i, (C_ii, var_i) in enumerate(zip(C[1:], np.array([1.0, 2.0, 3.0, 4.0, 5.0], dtype=np.float32)), 
                                              start=1):
-            s_dot[:] += (self.__t ** (i - 1)) * C_i_dot * var_i
+            s_dot[:] += (self.__t ** (i - 1)) * C_ii * var_i
 
         # Analytic expression (acceleration):
-        #   s_ddot(t) = 2*a_{2}*t + 6*a_{3}*t^2 + 12*a_{4}*t^3 + 20*a_{5}*t^4
-        for i, (C_i_ddot, var_i) in enumerate(zip(C[2:], np.array([2.0, 6.0, 12.0, 20.0], dtype=np.float32)), 
+        #   s_ddot(t) = 2*c_{2}*t + 6*c_{3}*t^2 + 12*c_{4}*t^3 + 20*c_{5}*t^4
+        for i, (C_iii, var_i) in enumerate(zip(C[2:], np.array([2.0, 6.0, 12.0, 20.0], dtype=np.float32)), 
                                               start=2):
-            s_ddot[:] += (self.__t ** (i - 2)) * C_i_ddot * var_i
+            s_ddot[:] += (self.__t ** (i - 2)) * C_iii * var_i
 
         return (s, s_dot, s_ddot)
-    
-class Trapezoidal_Cls(object):
-    def __init__(self, N: int) -> None:
-        # The value of the time must be within the interval: 
-        #   0.0 <= t <= 1.0
-        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
-    
-    @property
-    def t(self) -> tp.List[float]:
-        """
-        Description:
-           Get the time as an interval of values from 0 to 1.
-        
-        Returns:
-            (1) parameter [Vector<float> 1xn]: Time.
-                                                Note:
-                                                    Where n is the number of points.
-        """
-                
-        return self.__t
-    
-    @property
-    def N(self) -> int:
-        """
-        Description:
-           Get the number of time points of the trajectory.
-        
-        Returns:
-            (1) parameter [int]: Number of time points.
-        """
-                
-        return self.__t.shape[0]
-    
-    def Generate(self):
-        return True

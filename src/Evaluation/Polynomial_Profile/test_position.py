@@ -28,12 +28,16 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        ...
+        A program to generate position polynomial trajectories of degree 5.
+
+        Further information can be found in the programme below.
+            ../Lib/Trajectory/Profile.py
     """
     
     # Locate the path to the project folder.
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
+    # Initialization of multi-axis parameters for trajectory generation.
     s_0 = [{'Position': Mathematics.Degree_To_Radian(-10.0), 'Velocity': 0.0, 'Acceleration': 0.0},
            {'Position': Mathematics.Degree_To_Radian(10.0), 'Velocity': 0.0, 'Acceleration': 0.0},
            {'Position': Mathematics.Degree_To_Radian(-45.0), 'Velocity': 0.0, 'Acceleration': 0.0}]
@@ -41,7 +45,8 @@ def main():
            {'Position': Mathematics.Degree_To_Radian(-90.0), 'Velocity': 0.0, 'Acceleration': 0.0},
            {'Position': Mathematics.Degree_To_Radian(45.0), 'Velocity': 0.0, 'Acceleration': 0.0}]
 
-    Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(100)
+    # Initialization of the class to generate trajectory.
+    Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(N=100)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -49,22 +54,21 @@ def main():
     # Create a figure.
     _, ax = plt.subplots()
 
-    # Visualization of ....
+    # Visualization of multi-axis trajectories.
     for i, (s_0_i, s_f_i) in enumerate(zip(s_0, s_f)):
-        # ...
-        (_, s_dot, _) = Polynomial_Cls.Generate(s_0_i, s_f_i)
+        # Generation of position trajectories from input parameters.
+        (s, _, _) = Polynomial_Cls.Generate(s_0_i, s_f_i)
 
-        # ...
-        ax.plot(Polynomial_Cls.t, s_dot, '.--', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, label=r'$\dot{s}_{%d}(t)$' % (i + 1))
+        ax.plot(Polynomial_Cls.t, s, '.--', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, label=r'$s_{%d}(t)$' % (i + 1))
 
     # Set parameters of the graph (plot).
-    ax.set_title(r'Trajectory Polynomial Profile: Velocity', fontsize=25, pad=25.0)
+    ax.set_title(r'Trajectory Polynomial Profile: Position', fontsize=25, pad=25.0)
     #   Set the x ticks.
     ax.set_xticks(np.arange(np.min(Polynomial_Cls.t) - 0.1, np.max(Polynomial_Cls.t) + 0.1, 0.1))
     #   Label
     ax.set_xlabel(r't', fontsize=15, labelpad=10)
-    ax.set_ylabel(r'$\dot{s}(t)$', fontsize=15, labelpad=10) 
+    ax.set_ylabel(r's(t)', fontsize=15, labelpad=10) 
     #   Set parameters of the visualization.
     ax.grid(which='major', linewidth = 0.15, linestyle = '--')
     # Get handles and labels for the legend.
@@ -75,11 +79,14 @@ def main():
     ax.legend(legend.values(), legend.keys(), fontsize=10.0)
 
     if CONST_SAVE_DATA == True:
-        pass
+        # Set the full scree mode.
+        plt.get_current_fig_manager().full_screen_toggle()
+
+        # Save the results.
+        plt.savefig(f'{project_folder}/images/Polynomial_Profile/position.png', format='png', dpi=300)
     else:
         # Show the result.
         plt.show()
-
 
 if __name__ == "__main__":
     sys.exit(main())
