@@ -137,8 +137,7 @@ class Polynomial_Cls(object):
         # Find the coefficients c_{0 .. 5} from the equation below.
         #   Equation:
         #       [c_{0 .. 5}] = X^(-1) * [s_0, s_f, s_dot_0, s_dot_f, s_ddot_0, s_ddot_f]
-        C = np.linalg.inv(self.__X) @ np.append(list(s_0.values()), 
-                                                list(s_f.values()))
+        C = np.linalg.inv(self.__X) @ np.append(s_0, s_f)
         
         # Analytic expression (position):
         #   s(t) = c_{0} + c_{1}*t + c_{2}*t^2 + c_{3}*t^3 + c_{4}*t^4 + c_{5}*t^5
@@ -156,5 +155,84 @@ class Polynomial_Cls(object):
         for i, (C_iii, var_i) in enumerate(zip(C[2:], np.array([2.0, 6.0, 12.0, 20.0], dtype=np.float32)), 
                                               start=2):
             s_ddot[:] += (self.__t ** (i - 2)) * C_iii * var_i
+
+        return (s, s_dot, s_ddot)
+    
+class Trapezoidal_Cls(object):        
+    def __init__(self, N: int) -> None:
+        # The value of the time must be within the interval: 
+        #   0.0 <= t <= 1.0
+        #self.__t = np.arange(CONST_T_0, N)
+        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
+
+    @property
+    def t(self) -> tp.List[float]:
+        """
+        Description:
+           Get the time as an interval of values from 0 to 1.
+        
+        Returns:
+            (1) parameter [Vector<float> 1xn]: Normalized time.
+                                                Note:
+                                                    Where n is the number of points.
+        """
+                
+        return self.__t
+    
+    @property
+    def N(self) -> int:
+        """
+        Description:
+           Get the number of time points of the trajectory.
+        
+        Returns:
+            (1) parameter [int]: Number of time points.
+        """
+                
+        return self.__t.shape[0]
+
+    def Generate(self, s_0: float, s_f: float) -> tp.Tuple[tp.List[float], tp.List[float], 
+                                                           tp.List[float]]:
+        """
+        Description:
+            ...
+        """
+        
+        # https://bjpcjp.github.io/pdfs/robotics/MR_ch09_trajectory_generation.pdf
+        # https://epub.jku.at/obvulihs/download/pdf/5841037?originalFilename=true
+
+        # Initialization of the output varliables.
+        s = np.zeros(self.N, dtype=np.float32)
+        s_dot = s.copy(); s_ddot = s.copy()
+
+        # ...
+        T = self.t[-1] * self.N
+
+        # Set the velocity ...
+        #   Note:
+        #       The velocity must be withint the interval ...
+        #           v > abs(qf - q0) / T
+        #           v < 2 * abs(qf - q0) / T
+        v = ((s_f - s_0) / T) * 1.5
+        
+        # ...
+        t_a = ((s_0 - s_f) + v * T) / v
+
+        # ...
+        a = v / t_a
+
+        for i, t_i in enumerate(self.__t * self.N):
+            if t_i <= t_a:
+                s[i] = s_0 + 0.5 * a * t_i**2
+                s_dot[i] = a * t_i
+                s_ddot[i] = a
+            elif t_i <= T - t_a:
+                s[i] = (s_f - s_0 - v * T) * 0.5 + v * t_i
+                s_dot[i] = v
+                s_ddot[i] = 0.0
+            elif t_i <= T:
+                s[i] = s_f - 0.5 * a * T**2 + a * T * t_i - 0.5*a * t_i**2
+                s_dot[i] = a * (T - t_i)
+                s_ddot[i] = -a
 
         return (s, s_dot, s_ddot)

@@ -38,12 +38,12 @@ def main():
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
     # Initialization of multi-axis parameters for trajectory generation.
-    s_0 = [{'Position': Mathematics.Degree_To_Radian(-10.0), 'Velocity': 0.0, 'Acceleration': 0.0},
-           {'Position': Mathematics.Degree_To_Radian(10.0), 'Velocity': 0.0, 'Acceleration': 0.0},
-           {'Position': Mathematics.Degree_To_Radian(-45.0), 'Velocity': 0.0, 'Acceleration': 0.0}]
-    s_f = [{'Position': Mathematics.Degree_To_Radian(90.0), 'Velocity': 0.0, 'Acceleration': 0.0},
-           {'Position': Mathematics.Degree_To_Radian(-90.0), 'Velocity': 0.0, 'Acceleration': 0.0},
-           {'Position': Mathematics.Degree_To_Radian(45.0), 'Velocity': 0.0, 'Acceleration': 0.0}]
+    s_0 = [np.array([Mathematics.Degree_To_Radian(10.0), 0.0, 0.0], dtype=np.float32),
+           np.array([Mathematics.Degree_To_Radian(-10.0), 0.0, 0.0], dtype=np.float32),
+           np.array([Mathematics.Degree_To_Radian(-45.0), 0.0, 0.0], dtype=np.float32)]
+    s_f = [np.array([Mathematics.Degree_To_Radian(90.0), 0.0, 0.0], dtype=np.float32),
+           np.array([Mathematics.Degree_To_Radian(-90.0), 0.0, 0.0], dtype=np.float32),
+           np.array([Mathematics.Degree_To_Radian(45.0), 0.0, 0.0], dtype=np.float32)]
 
     # Initialization of the class to generate trajectory.
     Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(N=100)
