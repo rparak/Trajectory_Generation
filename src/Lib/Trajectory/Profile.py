@@ -1,12 +1,42 @@
+"""
+## =========================================================================== ## 
+MIT License
+Copyright (c) 2023 Roman Parak
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+## =========================================================================== ## 
+Author   : Roman Parak
+Email    : Roman.Parak@outlook.com
+Github   : https://github.com/rparak
+File Name: Profile.py
+## =========================================================================== ## 
+"""
+
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Typing (Support for type hints)
 import typing as tp
-# Custom Script:
-#   ../Lib/Transformation/Core
-import Lib.Transformation.Core as Transformation
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+
+"""
+Description:
+    Some useful references about the field of trajectory generation:
+        1. Modern Robotics: Mechanics, Planning, and Control, Kevin M. Lynch and Frank C. Park
+        2. Trajectory Planning for Automatic Machines and Robots by Luigi Biagiotti, Claudio Melchiorri
+        3. Robotics, Vision and Control, Fundamental Algorithms in Python, Peter Corke
+""" 
 
 """
 Description:
@@ -119,7 +149,7 @@ class Polynomial_Cls(object):
                                                                              tp.List[float]]:
         """
         Description:
-            Generate position, velocity, and acceleration polynomial trajectories of degree 5.
+            A function to generate position, velocity, and acceleration polynomial trajectories of degree 5.
 
         Args:
             (1, 2) s_0, s_f [Vector<float> 1x3]: Initial and final constraint configuration.
@@ -164,7 +194,6 @@ class Trapezoidal_Cls(object):
     """
     Description:
         The specific class for generating the trapezoidal trajectory from input constraints.
-
 
     Initialization of the Class:
         Args:
@@ -223,39 +252,40 @@ class Trapezoidal_Cls(object):
                                                            tp.List[float]]:
         """
         Description:
-            Generate position, velocity, and acceleration trapezoidal trajectories.
+            A function to generate position, velocity, and acceleration trapezoidal trajectories.
 
         Args:
             (1, 2) s_0, s_f [float]: Initial and final constraint configuration.
+                                     Note:
+                                        s_{..} - Position.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration trapezoidal trajectory.
         """
         
-        # https://bjpcjp.github.io/pdfs/robotics/MR_ch09_trajectory_generation.pdf
-        # https://epub.jku.at/obvulihs/download/pdf/5841037?originalFilename=true
-
         # Initialization of the output varliables.
         s = np.zeros(self.N, dtype=np.float32)
         s_dot = s.copy(); s_ddot = s.copy()
 
-        # ...
+        # Because we are using normalized time, we need to transform it into steps.
+        #   Note:
+        #       T is equal to the maximum value.
         T = self.t[-1] * self.N
 
-        # Set the velocity ...
+        # Calculate the velocity automatically.
         #   Note:
-        #       The velocity must be withint the interval ...
-        #           v > abs(qf - q0) / T
-        #           v < 2 * abs(qf - q0) / T
-        v = ((s_f - s_0) / T) * 1.5
+        #       The velocity must be within the interval, see below:
+        #           (qf - q0) / T < v < 2 * ((qf - q0) / T)
+        v = 1.5 * ((s_f - s_0) / T)
         
-        # ...
+        # Time of constant acceleration phase.
         t_a = ((s_0 - s_f) + v * T) / v
 
         # Express the acceleration with a simple formula.
         a = v / t_a
 
-        # ...
+        # Express the position (s), velocity (s_dot), and acceleration (s_ddot) of a trapezoidal 
+        # trajectory.
         for i, t_i in enumerate(self.__t * self.N):
             if t_i <= t_a:
                 # Phase 1: Acceleration.

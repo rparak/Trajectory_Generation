@@ -12,7 +12,7 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Script:
-#   ../Lib/Trajectory/Core
+#   ../Lib/Trajectory/Profile
 import Lib.Trajectory.Profile
 # Custom Script:
 #   ../Lib/Transformation/Utilities/Mathematics
@@ -28,15 +28,18 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        ...
+        A program to generate multi-axis trapezoidal position trajectories.
+
+        Further information can be found in the programme below.
+            ../Lib/Trajectory/Profile.py
     """
      
     # Locate the path to the project folder.
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
     # Initialization of multi-axis parameters for trajectory generation.
-    s_0 = [Mathematics.Degree_To_Radian(10.0)]
-    s_f = [Mathematics.Degree_To_Radian(90.0)]
+    s_0 = Mathematics.Degree_To_Radian(np.array([10.0, -10.0, -45.0], dtype=np.float32))
+    s_f = Mathematics.Degree_To_Radian(np.array([90.0, -90.0, 45.0], dtype=np.float32))
 
     # Initialization of the class to generate trajectory.
     Trapezoidal_Cls = Lib.Trajectory.Profile.Trapezoidal_Cls(N=100)
@@ -52,13 +55,13 @@ def main():
         # Generation of position trajectories from input parameters.
         (s, _, _) = Trapezoidal_Cls.Generate(s_0_i, s_f_i)
 
-        ax.plot(s, '.--', linewidth=1.0, markersize = 3.0, 
+        ax.plot(Trapezoidal_Cls.t, s, '.--', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, label=r'$s_{%d}(t)$' % (i + 1))
 
     # Set parameters of the graph (plot).
     ax.set_title(r'Trajectory Trapezoidal Profile: Position', fontsize=25, pad=25.0)
     #   Set the x ticks.
-    #ax.set_xticks(np.arange(np.min(Trapezoidal_Cls.t) - 0.1, np.max(Trapezoidal_Cls.t) + 0.1, 0.1))
+    ax.set_xticks(np.arange(np.min(Trapezoidal_Cls.t) - 0.1, np.max(Trapezoidal_Cls.t) + 0.1, 0.1))
     #   Label
     ax.set_xlabel(r't', fontsize=15, labelpad=10)
     ax.set_ylabel(r's(t)', fontsize=15, labelpad=10) 
@@ -81,6 +84,5 @@ def main():
         # Show the result.
         plt.show()
 
-    
 if __name__ == "__main__":
     sys.exit(main())

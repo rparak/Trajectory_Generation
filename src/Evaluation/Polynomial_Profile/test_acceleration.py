@@ -12,7 +12,7 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Script:
-#   ../Lib/Trajectory/Core
+#   ../Lib/Trajectory/Profile
 import Lib.Trajectory.Profile
 # Custom Script:
 #   ../Lib/Transformation/Utilities/Mathematics
@@ -28,8 +28,8 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        A program to generate acceleration polynomial trajectories of degree 5.
-
+        A program to generate multi-axis acceleration trajectories of fifth degree polynomials.
+        
         Further information can be found in the programme below.
             ../Lib/Trajectory/Profile.py
     """
