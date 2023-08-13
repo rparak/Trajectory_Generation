@@ -44,8 +44,7 @@ class Polynomial_Cls(object):
                 Cls.N
 
                 # Functions of the class.
-                Cls.Generate({'Position':  0.0, 'Velocity': 0.0, 'Acceleration': 0.0},
-                             {'Position': 1.57, 'Velocity': 0.0, 'Acceleration': 0.0})
+                Cls.Generate([0.0, 0.0, 0.0], [1.57, 0.0, 0.0])
     """
             
     def __init__(self, N: int) -> None:
@@ -116,15 +115,18 @@ class Polynomial_Cls(object):
                          [0.0, 1.0, 2.0, 3.0,  4.0,  5.0],
                          [0.0, 0.0, 2.0, 6.0, 12.0, 20.0]], dtype=np.float32)
 
-    def Generate(self, s_0: tp.Tuple[float, float, float], s_f: tp.Tuple[float, float, float]) -> tp.Tuple[tp.List[float], tp.List[float], 
-                                                                                                           tp.List[float]]:
+    def Generate(self, s_0: tp.List[float], s_f: tp.List[float]) -> tp.Tuple[tp.List[float], tp.List[float], 
+                                                                             tp.List[float]]:
         """
         Description:
             Generate position, velocity, and acceleration polynomial trajectories of degree 5.
 
         Args:
-            (1, 2) s_0, s_f [Dictionary {'Position': float, 'Velocity': float,
-                                         'Acceleration': float}]: Initial and final constraint configuration.
+            (1, 2) s_0, s_f [Vector<float> 1x3]: Initial and final constraint configuration.
+                                                 Note:
+                                                    s_{..}[0] - Position.
+                                                    s_{..}[1] - Velocity.
+                                                    s_{..}[2] - Acceleration.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration polynomial trajectory of degree 5.
@@ -158,11 +160,37 @@ class Polynomial_Cls(object):
 
         return (s, s_dot, s_ddot)
     
-class Trapezoidal_Cls(object):        
+class Trapezoidal_Cls(object):   
+    """
+    Description:
+        The specific class for generating the trapezoidal trajectory from input constraints.
+
+
+    Initialization of the Class:
+        Args:
+            (1) N [int]: The number of time points used to generate the polynomial trajectory.
+
+        Example:
+            Initialization:
+                # Assignment of the variables.
+                N = 100
+
+                # Initialization of the class.
+                Cls = Trapezoidal_Cls(Box)
+
+            Features:
+                # Properties of the class.
+                Cls.t
+                ...
+                Cls.N
+
+                # Functions of the class.
+                Cls.Generate(0.0, 1.57)
+    """
+             
     def __init__(self, N: int) -> None:
         # The value of the time must be within the interval: 
         #   0.0 <= t <= 1.0
-        #self.__t = np.arange(CONST_T_0, N)
         self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
 
     @property
@@ -195,7 +223,13 @@ class Trapezoidal_Cls(object):
                                                            tp.List[float]]:
         """
         Description:
-            ...
+            Generate position, velocity, and acceleration trapezoidal trajectories.
+
+        Args:
+            (1, 2) s_0, s_f [float]: Initial and final constraint configuration.
+
+        Returns:
+            (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration trapezoidal trajectory.
         """
         
         # https://bjpcjp.github.io/pdfs/robotics/MR_ch09_trajectory_generation.pdf
@@ -218,19 +252,23 @@ class Trapezoidal_Cls(object):
         # ...
         t_a = ((s_0 - s_f) + v * T) / v
 
-        # ...
+        # Express the acceleration with a simple formula.
         a = v / t_a
 
+        # ...
         for i, t_i in enumerate(self.__t * self.N):
             if t_i <= t_a:
+                # Phase 1: Acceleration.
                 s[i] = s_0 + 0.5 * a * t_i**2
                 s_dot[i] = a * t_i
                 s_ddot[i] = a
             elif t_i <= T - t_a:
-                s[i] = (s_f - s_0 - v * T) * 0.5 + v * t_i
+                # Phase 2: Constant velocity.
+                s[i] = (s_f + s_0 - v * T) * 0.5 + v * t_i
                 s_dot[i] = v
                 s_ddot[i] = 0.0
             elif t_i <= T:
+                # Phase 3: Deceleration.
                 s[i] = s_f - 0.5 * a * T**2 + a * T * t_i - 0.5*a * t_i**2
                 s_dot[i] = a * (T - t_i)
                 s_ddot[i] = -a
