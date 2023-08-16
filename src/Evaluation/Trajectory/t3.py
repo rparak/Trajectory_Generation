@@ -47,6 +47,7 @@ def lspb(via,dur,tb):
     v_seg=np.zeros(dur.size)
     for i in range(0,len(via)-1):
         v_seg[i]=(via[i+1]-via[i])/dur[i]
+    print(v_seg)
 
     #=====CALCULATE-ACCELERATION-EACH-VIA=====
     a_via=np.zeros(via.size)
@@ -54,6 +55,7 @@ def lspb(via,dur,tb):
     for i in range(1,len(via)-1):
         a_via[i]=(v_seg[i]-v_seg[i-1])/tb[i]
     a_via[-1]=(0-v_seg[-1])/tb[-1]
+    print(a_via)
 
     #=====CALCULATE-TIMING-EACH-VIA=====
     T_via=np.zeros(via.size)
@@ -61,56 +63,54 @@ def lspb(via,dur,tb):
     for i in range(1,len(via)-1):
         T_via[i]=T_via[i-1]+dur[i-1]
     T_via[-1]=T_via[-2]+dur[-1]
+    print(T_via)
 
     #=====GENERATING-CHART/GRAPH/FIGURE=====
     # q(t) = q_i + v_{i-1}(t-T_i) + \frac{1}{2}a(t-T_i+\frac{t_i^b}{2})^2  #parabolic phase
     # q(t) = q_i + v_i*(t-T_i)                 #linear phase
     #parabolic
-    t,s,v,a = parab(via[0], 0, v_seg[0], T_via[0]-0.5*tb[0], T_via[0]+0.5*tb[0], step=1)
+    t,s,v,_ = parab(via[0], 0, v_seg[0], T_via[0]-0.5*tb[0], T_via[0]+0.5*tb[0], 0.01)
     time    = t
     pos     = s
     speed   = v
-    accel   = a
     
     for i in range(1,len(via)-1):
         # linear
-        t,s,v,a = lerp(pos[-1],v_seg[i-1],T_via[i-1]+0.5*tb[i],T_via[i]-0.5*tb[i+1],0.01)
+        t,s,v,_ = lerp(pos[-1],v_seg[i-1],T_via[i-1]+0.5*tb[i],T_via[i]-0.5*tb[i+1],0.01)
         time    = np.concatenate((time,t))
         pos     = np.concatenate((pos,s))
         speed   = np.concatenate((speed,v))
-        accel   = np.concatenate((accel,a))
 
         #parabolic
-        t,s,v,a = parab(pos[-1], v_seg[i-1], v_seg[i], T_via[i]-0.5*tb[i+1], T_via[i]+0.5*tb[i+1], 0.01)
+        t,s,v,_= parab(pos[-1], v_seg[i-1], v_seg[i], T_via[i]-0.5*tb[i+1], T_via[i]+0.5*tb[i+1], 0.01)
         time    = np.concatenate((time,t))
         pos     = np.concatenate((pos,s))
         speed   = np.concatenate((speed,v))
-        accel   = np.concatenate((accel,a))
 
     # linear
-    t,s,v,a = lerp(pos[-1],v_seg[-1],T_via[-2]+0.5*tb[-2],T_via[-1]-0.5*tb[-1],0.01)
+    t,s,v,_ = lerp(pos[-1],v_seg[-1],T_via[-2]+0.5*tb[-2],T_via[-1]-0.5*tb[-1],0.01)
     time    = np.concatenate((time,t))
     pos     = np.concatenate((pos,s))
     speed   = np.concatenate((speed,v))
-    accel   = np.concatenate((accel,a))
 
     #parabolic
-    t,s,v,a = parab(pos[-1], v_seg[-1], 0, T_via[-1]-0.5*tb[-1],  T_via[-1]+0.5*tb[-1], 0.01)
+    t,s,v,_ = parab(pos[-1], v_seg[-1], 0, T_via[-1]-0.5*tb[-1],  T_via[-1]+0.5*tb[-1], 0.01)
     time    = np.concatenate((time,t))
     pos     = np.concatenate((pos,s))
     speed   = np.concatenate((speed,v))
-    accel   = np.concatenate((accel,a))
 
+    """
     print('v seg = ',v_seg,
     '\na via = ',a_via,
     '\nT via = ',T_via,
     '\ntime = ',time,
     '\npos = ',pos)
+    """
 
-    return(v_seg,a_via,T_via,time,pos,speed,accel)
+    return(v_seg,a_via,T_via,time,pos,speed)
 
 via = np.asarray([10,60,80,10])
-dur = np.asarray([10,10,10])
+dur = np.asarray([1,1,1])*10.0
 tb = np.asarray([1,1,1,1])*2.0
 
 res=lspb(via,dur,tb)

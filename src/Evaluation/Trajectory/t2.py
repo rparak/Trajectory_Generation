@@ -193,11 +193,14 @@ if __name__ == "__main__":
     
     # change to the one axis.
     path = np.array([[10], [60], [80], [10]])
-          
+  
     out = mstraj(path, dt=0.1, tacc=5.0, qdmax=2.0) # extra=True)
 
+
+
     plt.figure()
-    plt.plot(np.array([0.0, out.arrive[0], out.arrive[1], out.arrive[2]]), np.array([10.0, out.via[0, 0], out.via[1, 0], out.via[2, 0]]))
+    #plt.plot(np.array([out.t[0], out.t[275], out.t[-1]]), np.array([out.q[0], out.q[275], out.q[-1]]))
+    #plt.plot(np.array([0.0, out.arrive[0], out.arrive[1], out.arrive[2]]), np.array([10.0, out.via[0, 0], out.via[1, 0], out.via[2, 0]]))
     plt.plot(out.t, out.q, '-') 
     plt.show() 
         
