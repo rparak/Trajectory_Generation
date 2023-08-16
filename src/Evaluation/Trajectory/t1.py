@@ -252,9 +252,9 @@ def mstraj(viapoints, dt, tacc, qdmax=None, tsegment=None, q0=None, qd0=None, qd
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     
-    path = np.array([[10, 10], [10, 60], [80, 80], [50, 10]])
+    path = np.array([[10, 10], [10, 60], [80, 80], [50, 10], [50, 10]])
           
-    out = mstraj(path, dt=0.1, tacc=10, qdmax=2.5) # extra=True)
+    out = mstraj(path, dt=0.1, tacc=5.0, qdmax=2.5) # extra=True)
     #print(out.q)
     
     plt.figure()

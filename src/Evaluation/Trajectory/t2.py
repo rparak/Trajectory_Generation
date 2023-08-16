@@ -185,8 +185,8 @@ def mstraj(viapoints, dt, tacc, qdmax):
     qb = jtraj(q0, q_next, np.arange(0, tacc2, dt), qd0=qd_prev, qd1=qdf).q
     tg = np.vstack([tg, qb[1:,:]])
 
-    #return namedtuple('mstraj', 't q arrive via')(dt * np.arange(0, tg.shape[0]), tg, arrive,viapoints)
-    return namedtuple('mstraj', 't q arrive via')(np.linspace(0, 1, tg.shape[0]), tg, arrive,viapoints)
+    return namedtuple('mstraj', 't q arrive via')(dt * np.arange(0, tg.shape[0]), tg, arrive,viapoints)
+    #return namedtuple('mstraj', 't q arrive via')(np.linspace(0, 1, tg.shape[0]), tg, arrive,viapoints)
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
@@ -194,10 +194,10 @@ if __name__ == "__main__":
     # change to the one axis.
     path = np.array([[10], [60], [80], [10]])
           
-    out = mstraj(path, dt=0.1, tacc=10, qdmax=2.0) # extra=True)
-    #print(out.t.size)
+    out = mstraj(path, dt=0.1, tacc=5.0, qdmax=2.0) # extra=True)
 
     plt.figure()
-    plt.plot(out.t, out.q, '-')
+    plt.plot(np.array([0.0, out.arrive[0], out.arrive[1], out.arrive[2]]), np.array([10.0, out.via[0, 0], out.via[1, 0], out.via[2, 0]]))
+    plt.plot(out.t, out.q, '-') 
     plt.show() 
         

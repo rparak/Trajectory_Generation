@@ -32,14 +32,6 @@ import typing as tp
 
 """
 Description:
-    Some useful references about the field of trajectory generation:
-        1. Modern Robotics: Mechanics, Planning, and Control, Kevin M. Lynch and Frank C. Park
-        2. Trajectory Planning for Automatic Machines and Robots by Luigi Biagiotti, Claudio Melchiorri
-        3. Robotics, Vision and Control, Fundamental Algorithms in Python, Peter Corke
-""" 
-
-"""
-Description:
     Initialization of constants.
 """
 # Time x ∈ [0: The starting value of the sequence, 
@@ -110,6 +102,20 @@ class Polynomial_Cls(object):
         """
                 
         return self.__t.shape[0]
+    
+    @N.setter
+    def N(self, N):
+        """
+        Description:
+           Set the number of time points of the trajectory.
+        
+        Returns:
+            (1) N [int]: The number of time points used to generate the polynomial trajectory.
+        """
+
+        # The value of the time must be within the interval: 
+        #   0.0 <= t <= 1.0
+        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
     
     def __Quintic_Polynomial(self) -> tp.List[tp.List[float]]:
         """
@@ -248,6 +254,20 @@ class Trapezoidal_Cls(object):
                 
         return self.__t.shape[0]
 
+    @N.setter
+    def N(self, N):
+        """
+        Description:
+           Set the number of time points of the trajectory.
+        
+        Returns:
+            (1) N [int]: The number of time points used to generate the polynomial trajectory.
+        """
+
+        # The value of the time must be within the interval: 
+        #   0.0 <= t <= 1.0
+        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
+        
     def Generate(self, s_0: float, s_f: float) -> tp.Tuple[tp.List[float], tp.List[float], 
                                                            tp.List[float]]:
         """

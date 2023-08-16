@@ -40,7 +40,8 @@ def main():
     # Initialization of the class to generate trajectory.
     MP_Trajectory_Cls = Lib.Trajectory.Core.Multi_Point_Cls(0.1, 10.0, 2.0)
 
-    MP_Trajectory_Cls.Generate(np.array([10, 60, 80, 10]))
+    # ...
+    (t, s) = MP_Trajectory_Cls.Generate(np.array([10.0, 60.0, 80.0, 10.0]))
     
 if __name__ == "__main__":
     sys.exit(main())
