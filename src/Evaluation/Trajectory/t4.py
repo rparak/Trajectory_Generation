@@ -66,7 +66,7 @@ def lspb(via,dur,tb):
 
     #=====CALCULATE-TIMING-EACH-VIA=====
     T_via=np.zeros(via.size)
-    T_via[0]=0.5*tb[0]
+    T_via[0]=0.0
     for i in range(1,len(via)-1):
         T_via[i]=T_via[i-1]+dur[i-1]
     T_via[-1]=T_via[-2]+dur[-1]
@@ -74,13 +74,26 @@ def lspb(via,dur,tb):
 
 
     P_Cls = Profile.Polynomial_Cls(201)
-    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb[0], 0.0, 0.0]))
-    time    = np.arange(T_via[0]-0.5*tb[0], T_via[0]+0.5*tb[0] + 0.01, 0.01)
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * (T_via[0]+0.5*tb[0]), v_seg[0], 0.0]), T_via[0]-0.5*tb[0], T_via[0]+0.5*tb[0], 0.01)
+    time    = P_Cls.t
     pos     = s
     speed   = s_dot
-    print(s[0], s[-1])
-    print(time[0], time[-1])
+ 
+    # linear
+    t,s,v,_ = lerp(pos[-1], v_seg[0],T_via[0]+0.5*tb[1],T_via[1]-0.5*tb[2],0.01)
+    time    = np.concatenate((time,t))
+    pos     = np.concatenate((pos,s))
+    speed   = np.concatenate((speed,v))
 
+
+    P_Cls_2 = Profile.Polynomial_Cls(201)
+    (s, s_dot, s_ddot) = P_Cls_2.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([via[1] + v_seg[1] * (2.0), v_seg[1],  0.0]), T_via[1]-0.5*tb[2], T_via[1]+0.5*tb[2], 0.01)
+    time    = np.concatenate((time, P_Cls_2.t))
+    pos     = np.concatenate((pos, s))
+    speed   = np.concatenate((speed, s_dot))
+
+    print(via[1], v_seg[1], (T_via[1]+0.5*tb[2]), T_via[1]-0.5*tb[2])
+    
     """
     t,s,v,_ = parab(via[0], 0, v_seg[0], T_via[0]-0.5*tb[0], T_via[0]+0.5*tb[0], 0.01)
     time    = t

@@ -75,7 +75,7 @@ class Polynomial_Cls(object):
         self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
 
         # Obtain the modified polynomial matrix of degree 5.
-        self.__X = self.__Quintic_Polynomial()
+        #self.__X = self.__Quintic_Polynomial()
 
     @property
     def t(self) -> tp.List[float]:
@@ -117,7 +117,7 @@ class Polynomial_Cls(object):
         #   0.0 <= t <= 1.0
         self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
     
-    def __Quintic_Polynomial(self) -> tp.List[tp.List[float]]:
+    def __Quintic_Polynomial(self, t_0, t_f) -> tp.List[tp.List[float]]:
         """
         Descrtiption:
             Obtain the modified polynomial matrix of degree 5.
@@ -144,14 +144,25 @@ class Polynomial_Cls(object):
             (1) parameter [Vector<float> 6x6]: Modified polynomial matrix of degree 5.
         """
         
+        """
         return np.array([[1.0, 0.0, 0.0, 0.0,  0.0,  0.0],
                          [0.0, 1.0, 0.0, 0.0,  0.0,  0.0],
                          [0.0, 0.0, 2.0, 0.0,  0.0,  0.0],
                          [1.0, 1.0, 1.0, 1.0,  1.0,  1.0],
                          [0.0, 1.0, 2.0, 3.0,  4.0,  5.0],
                          [0.0, 0.0, 2.0, 6.0, 12.0, 20.0]], dtype=np.float32)
+        """
 
-    def Generate(self, s_0: tp.List[float], s_f: tp.List[float]) -> tp.Tuple[tp.List[float], tp.List[float], 
+        X = np.array([[1.0, t_0,    t_0**2,       t_0**3,        t_0**4,        t_0**5],
+             [0.0, 1.0, 2.0 * t_0, 3.0 * t_0**2,  4.0 * t_0**3,  5.0 * t_0**4],
+             [0.0, 0.0,       2.0,    6.0 * t_0, 12.0 * t_0**2, 20.0 * t_0**3],
+             [1.0, t_f,    t_f**2,       t_f**3,        t_f**4,        t_f**5],
+             [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
+             [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]], dtype=np.float32)
+        
+        return X
+
+    def Generate(self, s_0: tp.List[float], s_f: tp.List[float], t_0, t_1, dt) -> tp.Tuple[tp.List[float], tp.List[float], 
                                                                              tp.List[float]]:
         """
         Description:
@@ -168,8 +179,12 @@ class Polynomial_Cls(object):
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration polynomial trajectory of degree 5.
         """
 
+        self.__t = np.arange(t_0, t_1 + dt, dt)
+
+        self.__X = self.__Quintic_Polynomial(t_0, t_1)
+
         # Initialization of the output varliables.
-        s = np.zeros(self.N, dtype=np.float32)
+        s = np.zeros(self.__t.size, dtype=np.float32)
         s_dot = s.copy(); s_ddot = s.copy()
 
         # Find the coefficients c_{0 .. 5} from the equation below.

@@ -70,7 +70,7 @@ def main():
     ax.set_xlabel(r't', fontsize=15, labelpad=10)
     ax.set_ylabel(r'$\ddot{s}(t)$', fontsize=15, labelpad=10) 
     #   Set parameters of the visualization.
-    ax.grid(which='major', linewidth = 0.15, linestyle = '--')
+    ax.grid(which='major', linewidth = 0.75, linestyle = ':')
     # Get handles and labels for the legend.
     handles, labels = plt.gca().get_legend_handles_labels()
     # Remove duplicate labels.
