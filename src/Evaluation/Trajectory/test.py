@@ -38,7 +38,9 @@ def main():
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
     # Initialization of the class to generate trajectory.
-    MP_Trajectory_Cls = Lib.Trajectory.Core.Multi_Point_Cls()
+    MP_Trajectory_Cls = Lib.Trajectory.Core.Multi_Point_Cls(0.1, 10.0, 2.0)
+
+    MP_Trajectory_Cls.Generate(np.array([10, 60, 80, 10]))
     
 if __name__ == "__main__":
     sys.exit(main())
