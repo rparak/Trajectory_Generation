@@ -176,7 +176,7 @@ class Polynomial_Cls(object):
         #   Equation:
         #       [c_{0 .. 5}] = X^(-1) * [s_0, s_f, s_dot_0, s_dot_f, s_ddot_0, s_ddot_f]
         C = np.linalg.inv(self.__X) @ np.append(s_0, s_f)
-        
+
         # Analytic expression (position):
         #   s(t) = c_{0} + c_{1}*t + c_{2}*t^2 + c_{3}*t^3 + c_{4}*t^4 + c_{5}*t^5
         for i, C_i in enumerate(C):

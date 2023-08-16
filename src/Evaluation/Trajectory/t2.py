@@ -166,6 +166,7 @@ def mstraj(viapoints, dt, tacc, qdmax):
         qd = dq / tseg
 
         # add the blend polynomial
+        print(qd_prev, qdf)
         qb = jtraj(q0, q_prev + tacc2 * qd, np.arange(0, taccx, dt), qd0=qd_prev, qd1=qd).q
         tg = np.vstack([tg, qb[1:,:]])
 
@@ -194,7 +195,7 @@ if __name__ == "__main__":
     # change to the one axis.
     path = np.array([[10], [60], [80], [10]])
   
-    out = mstraj(path, dt=0.1, tacc=5.0, qdmax=2.0) # extra=True)
+    out = mstraj(path, dt=0.1, tacc=5.0, qdmax=5.0) # extra=True)
 
 
 
