@@ -190,11 +190,10 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     
     # change to the one axis.
-    path = np.array([[10, 10], [10, 60], [80, 80], [50, 10]])
+    path = np.array([[10], [60], [80], [10]])
           
     out = mstraj(path, dt=0.1, tacc=10, qdmax=2.5) # extra=True)
-    print(out.arrive)
-    
+ 
     plt.figure()
     plt.plot(out.t, out.q)
     plt.show() 
