@@ -24,8 +24,12 @@ Description:
 # https://www.researchgate.net/publication/325810192_Creating_Through_Points_in_Linear_Function_with_Parabolic_Blends_Path_by_Optimization_Method?enrichId=rgreq-65d1dcee4edc6a72c802c7a89774de87-XXX&enrichSource=Y292ZXJQYWdlOzMyNTgxMDE5MjtBUzo2Mzg0NzEyNTMyOTEwMDhAMTUyOTIzNDgxNzU3OA%3D%3D&el=1_x_3&_esc=publicationCoverPdf
 # Turning Paths Into Trajectories Using Parabolic Blends
 # https://github.com/SakshayMahna/Robotics-Mechanics/tree/main/Part-14-CubicInterpolation/tools
+# http://timeconqueror.blogspot.com/2012/10/trajectory-generation-solution.html
+
 
 # Trajectory with non-null initial and final velocities ...
+
+# Change name to ... LFPB_Cls
 
 class Multi_Point_Cls(object):
     def __init__(self, delta_time: float, t_blend: float, v_max: float) -> None:
