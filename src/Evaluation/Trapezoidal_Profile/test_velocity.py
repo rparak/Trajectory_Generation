@@ -12,8 +12,8 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Script:
-#   ../Lib/Trajectory/Profile
-import Lib.Trajectory.Profile
+#   ../Lib/Trajectory/Utilities
+import Lib.Trajectory.Utilities
 # Custom Script:
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
@@ -42,7 +42,7 @@ def main():
     s_f = Mathematics.Degree_To_Radian(np.array([90.0, -90.0, 45.0], dtype=np.float32))
 
     # Initialization of the class to generate trajectory.
-    Trapezoidal_Cls = Lib.Trajectory.Profile.Trapezoidal_Cls(delta_time=0.01)
+    Trapezoidal_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=0.01)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])

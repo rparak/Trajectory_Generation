@@ -5,8 +5,7 @@ import sys
 #   Add access if it is not in the system path.
 if '../' + 'src' not in sys.path:
     sys.path.append('../..')
-
-import Lib.Trajectory.Profile as Profile
+import Lib.Trajectory.Utilities as Profile
 
 def lerp(point0, v0, t0, t1, step=1):
     # Generate a series of timestep
@@ -77,7 +76,7 @@ def lspb(via,dur,tb):
     # t = s/v
 
     # ...
-    P_Cls = Profile.Polynomial_Cls(0.01)
+    P_Cls = Utilities.Polynomial_Cls(0.01)
     (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb[0], v_seg[0], 0.0]), T_via[0]-tb[0], T_via[0]+tb[0])
     time    = P_Cls.t
     pos     = s

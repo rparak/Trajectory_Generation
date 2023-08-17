@@ -3,8 +3,8 @@ import numpy as np
 # Typing (Support for type hints)
 import typing as tp
 # Custom Script:
-#   ../Lib/Trajectory/Core
-import Lib.Trajectory.Profile
+#   ../Lib/Trajectory/Utilities
+import Lib.Trajectory.Utilities
 
 """
 Description:
@@ -49,7 +49,7 @@ class Multi_Point_Cls(object):
         """
 
         # Initialization of the class to generate trajectory.
-        Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(N=100)
+        Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Cls(N=100)
 
         # ...
         s_previous = P[0]; s_dot_previous = np.array([0.0], dtype=np.float32)
@@ -57,4 +57,4 @@ class Multi_Point_Cls(object):
         for i, P_i in enumerate(P[1::]):
             pass
 
-        return (np.linspace(Lib.Trajectory.Profile.CONST_T_0, Lib.Trajectory.Profile.CONST_T_1, s.size), s)
+        return (np.linspace(Lib.Trajectory.Utilities.CONST_T_0, Lib.Trajectory.Utilities.CONST_T_1, s.size), s)

@@ -30,16 +30,7 @@ import numpy as np
 # Typing (Support for type hints)
 import typing as tp
 
-"""
-Description:
-    Initialization of constants.
-"""
-# Time x ∈ [0: The starting value of the sequence, 
-#           1: The end value of the sequence] {0.0 <= x <= 1.0}
-CONST_T_0 = 0.0
-CONST_T_1 = 1.0
-
-class Polynomial_Cls(object):
+class Polynomial_Profile_Cls(object):
     """
     Description:
         The specific class for generating the polynomial trajectory of degree 5 (quintic) from input constraints.
@@ -57,7 +48,7 @@ class Polynomial_Cls(object):
                 delta_time = 0.01
 
                 # Initialization of the class.
-                Cls = Polynomial_Cls(delta_time)
+                Cls = Polynomial_Profile_Cls(delta_time)
 
             Features:
                 # Properties of the class.
@@ -185,7 +176,7 @@ class Polynomial_Cls(object):
 
         return (s, s_dot, s_ddot)
     
-class Trapezoidal_Cls(object):   
+class Trapezoidal_Profile_Cls(object):   
     """
     Description:
         The specific class for generating the trapezoidal trajectory from input constraints.
@@ -200,7 +191,7 @@ class Trapezoidal_Cls(object):
                 delta_time = 0.01
 
                 # Initialization of the class.
-                Cls = Trapezoidal_Cls(delta_time)
+                Cls = Trapezoidal_Profile_Cls(delta_time)
 
             Features:
                 # Properties of the class.
@@ -287,17 +278,17 @@ class Trapezoidal_Cls(object):
         for i, t_i in enumerate(self.__t):
             if t_i <= t_a:
                 # Phase 1: Acceleration.
-                s[i] = s_0 + 0.5 * a * t_i**2
+                #s[i] = s_0 + 0.5 * a * t_i**2
                 s_dot[i] = a * t_i
                 s_ddot[i] = a
             elif t_i <= T - t_a:
                 # Phase 2: Constant velocity.
-                s[i] = (s_f + s_0 - v * T) * 0.5 + v * t_i
+                #s[i] = (s_f + s_0 - v * T) * 0.5 + v * t_i
                 s_dot[i] = v
                 s_ddot[i] = 0.0
             elif t_i <= T:
                 # Phase 3: Deceleration.
-                s[i] = s_f - 0.5 * a * T**2 + a * T * t_i - 0.5*a * t_i**2
+                #s[i] = s_f - 0.5 * a * T**2 + a * T * t_i - 0.5*a * t_i**2
                 s_dot[i] = a * (T - t_i)
                 s_ddot[i] = -a
 
