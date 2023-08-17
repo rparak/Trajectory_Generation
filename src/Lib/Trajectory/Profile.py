@@ -49,15 +49,15 @@ class Polynomial_Cls(object):
 
     Initialization of the Class:
         Args:
-            (1) N [int]: The number of time points used to generate the polynomial trajectory.
+            (1) delta_time [fluat]: The difference (spacing) between the time values.
 
         Example:
             Initialization:
                 # Assignment of the variables.
-                N = 100
+                delta_time = 0.01
 
                 # Initialization of the class.
-                Cls = Polynomial_Cls(Box)
+                Cls = Polynomial_Cls(delta_time)
 
             Features:
                 # Properties of the class.
@@ -66,27 +66,24 @@ class Polynomial_Cls(object):
                 Cls.N
 
                 # Functions of the class.
-                Cls.Generate([0.0, 0.0, 0.0], [1.57, 0.0, 0.0])
+                Cls.Generate([0.0, 0.0, 0.0], [1.57, 0.0, 0.0], 0.0, 1.0)
     """
             
-    def __init__(self, N: int) -> None:
-        # The value of the time must be within the interval: 
-        #   0.0 <= t <= 1.0
-        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
-
-        # Obtain the modified polynomial matrix of degree 5.
-        #self.__X = self.__Quintic_Polynomial()
+    def __init__(self, delta_time: float) -> None:
+        # The difference (spacing) between the time values.
+        self.__delta_time = delta_time
 
     @property
     def t(self) -> tp.List[float]:
         """
         Description:
-           Get the time as an interval of values from 0 to 1.
-        
+            Get evenly spaced time values at the following interval, see below:
+                t_0 <= t <= t_f
+
         Returns:
-            (1) parameter [Vector<float> 1xn]: Normalized time.
+            (1) parameter [Vector<float> 1xn]: Time values.
                                                 Note:
-                                                    Where n is the number of points.
+                                                    Where n is the number of time values.
         """
                 
         return self.__t
@@ -102,20 +99,6 @@ class Polynomial_Cls(object):
         """
                 
         return self.__t.shape[0]
-    
-    @N.setter
-    def N(self, N):
-        """
-        Description:
-           Set the number of time points of the trajectory.
-        
-        Returns:
-            (1) N [int]: The number of time points used to generate the polynomial trajectory.
-        """
-
-        # The value of the time must be within the interval: 
-        #   0.0 <= t <= 1.0
-        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
     
     def __Quintic_Polynomial(self, t_0, t_f) -> tp.List[tp.List[float]]:
         """
@@ -135,35 +118,22 @@ class Polynomial_Cls(object):
                      [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
                      [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]]
 
-            The X matrix has been modified to make the calculation as fast as possible.
-                Note:
-                    t_0 is always equal to 0.0, and t_f is always equal to 1.0 because we use 
-                    the normalized time, t.
+        Args:
+            (1, 2) t_0, t_f [float]: Initial and final time constant.
 
         Returns:
             (1) parameter [Vector<float> 6x6]: Modified polynomial matrix of degree 5.
         """
         
-        """
-        return np.array([[1.0, 0.0, 0.0, 0.0,  0.0,  0.0],
-                         [0.0, 1.0, 0.0, 0.0,  0.0,  0.0],
-                         [0.0, 0.0, 2.0, 0.0,  0.0,  0.0],
-                         [1.0, 1.0, 1.0, 1.0,  1.0,  1.0],
-                         [0.0, 1.0, 2.0, 3.0,  4.0,  5.0],
-                         [0.0, 0.0, 2.0, 6.0, 12.0, 20.0]], dtype=np.float32)
-        """
-
-        X = np.array([[1.0, t_0,    t_0**2,       t_0**3,        t_0**4,        t_0**5],
-             [0.0, 1.0, 2.0 * t_0, 3.0 * t_0**2,  4.0 * t_0**3,  5.0 * t_0**4],
-             [0.0, 0.0,       2.0,    6.0 * t_0, 12.0 * t_0**2, 20.0 * t_0**3],
-             [1.0, t_f,    t_f**2,       t_f**3,        t_f**4,        t_f**5],
-             [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
-             [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]], dtype=np.float32)
-        
-        return X
-
-    def Generate(self, s_0: tp.List[float], s_f: tp.List[float], t_0, t_1, dt) -> tp.Tuple[tp.List[float], tp.List[float], 
-                                                                             tp.List[float]]:
+        return np.array([[1.0, t_0,    t_0**2,       t_0**3,        t_0**4,        t_0**5],
+                         [0.0, 1.0, 2.0 * t_0, 3.0 * t_0**2,  4.0 * t_0**3,  5.0 * t_0**4],
+                         [0.0, 0.0,       2.0,    6.0 * t_0, 12.0 * t_0**2, 20.0 * t_0**3],
+                         [1.0, t_f,    t_f**2,       t_f**3,        t_f**4,        t_f**5],
+                         [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
+                         [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]], dtype=np.float32)
+ 
+    def Generate(self, s_0: tp.List[float], s_f: tp.List[float], t_0, t_f) -> tp.Tuple[tp.List[float], tp.List[float], 
+                                                                                       tp.List[float]]:
         """
         Description:
             A function to generate position, velocity, and acceleration polynomial trajectories of degree 5.
@@ -174,14 +144,18 @@ class Polynomial_Cls(object):
                                                     s_{..}[0] - Position.
                                                     s_{..}[1] - Velocity.
                                                     s_{..}[2] - Acceleration.
+            (3, 4) t_0, t_f [float]: Initial and final time constant.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration polynomial trajectory of degree 5.
         """
 
-        self.__t = np.arange(t_0, t_1 + dt, dt)
+        # Get evenly distributed time values in a given interval.
+        #   t_0 <= t <= t_f
+        self.__t = np.arange(t_0, t_f + self.__delta_time, self.__delta_time)
 
-        self.__X = self.__Quintic_Polynomial(t_0, t_1)
+        # Obtain the modified polynomial matrix of degree 5.
+        self.__X = self.__Quintic_Polynomial(t_0, t_f)
 
         # Initialization of the output varliables.
         s = np.zeros(self.__t.size, dtype=np.float32)
@@ -218,15 +192,15 @@ class Trapezoidal_Cls(object):
 
     Initialization of the Class:
         Args:
-            (1) N [int]: The number of time points used to generate the polynomial trajectory.
+            (1) delta_time [fluat]: The difference (spacing) between the time values.
 
         Example:
             Initialization:
                 # Assignment of the variables.
-                N = 100
+                delta_time = 0.01
 
                 # Initialization of the class.
-                Cls = Trapezoidal_Cls(Box)
+                Cls = Trapezoidal_Cls(delta_time)
 
             Features:
                 # Properties of the class.
@@ -238,21 +212,21 @@ class Trapezoidal_Cls(object):
                 Cls.Generate(0.0, 1.57)
     """
              
-    def __init__(self, N: int) -> None:
-        # The value of the time must be within the interval: 
-        #   0.0 <= t <= 1.0
-        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
+    def __init__(self, delta_time: float) -> None:
+        # The difference (spacing) between the time values.
+        self.__delta_time = delta_time
 
     @property
     def t(self) -> tp.List[float]:
         """
         Description:
-           Get the time as an interval of values from 0 to 1.
-        
+            Get evenly spaced time values at the following interval, see below:
+                t_0 <= t <= t_f
+
         Returns:
-            (1) parameter [Vector<float> 1xn]: Normalized time.
+            (1) parameter [Vector<float> 1xn]: Time values.
                                                 Note:
-                                                    Where n is the number of points.
+                                                    Where n is the number of time values.
         """
                 
         return self.__t
@@ -268,23 +242,9 @@ class Trapezoidal_Cls(object):
         """
                 
         return self.__t.shape[0]
-
-    @N.setter
-    def N(self, N):
-        """
-        Description:
-           Set the number of time points of the trajectory.
         
-        Returns:
-            (1) N [int]: The number of time points used to generate the polynomial trajectory.
-        """
-
-        # The value of the time must be within the interval: 
-        #   0.0 <= t <= 1.0
-        self.__t = np.linspace(CONST_T_0, CONST_T_1, N)
-        
-    def Generate(self, s_0: float, s_f: float) -> tp.Tuple[tp.List[float], tp.List[float], 
-                                                           tp.List[float]]:
+    def Generate(self, s_0: float, s_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], tp.List[float], 
+                                                                                   tp.List[float]]:
         """
         Description:
             A function to generate position, velocity, and acceleration trapezoidal trajectories.
@@ -293,11 +253,16 @@ class Trapezoidal_Cls(object):
             (1, 2) s_0, s_f [float]: Initial and final constraint configuration.
                                      Note:
                                         s_{..} - Position.
+            (3, 4) t_0, t_f [float]: Initial and final time constant.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration trapezoidal trajectory.
         """
         
+        # Get evenly distributed time values in a given interval.
+        #   t_0 <= t <= t_f
+        self.__t = np.arange(t_0, t_f + self.__delta_time, self.__delta_time)
+
         # Initialization of the output varliables.
         s = np.zeros(self.N, dtype=np.float32)
         s_dot = s.copy(); s_ddot = s.copy()

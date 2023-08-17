@@ -42,7 +42,7 @@ def main():
     s_f = Mathematics.Degree_To_Radian(np.array([90.0, -90.0, 45.0], dtype=np.float32))
 
     # Initialization of the class to generate trajectory.
-    Trapezoidal_Cls = Lib.Trajectory.Profile.Trapezoidal_Cls(N=100)
+    Trapezoidal_Cls = Lib.Trajectory.Profile.Trapezoidal_Cls(delta_time=0.01)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -53,7 +53,7 @@ def main():
     # Visualization of multi-axis trajectories.
     for i, (s_0_i, s_f_i) in enumerate(zip(s_0, s_f)):
         # Generation of acceleration trajectories from input parameters.
-        (_, _, s_ddot) = Trapezoidal_Cls.Generate(s_0_i, s_f_i)
+        (_, _, s_ddot) = Trapezoidal_Cls.Generate(s_0_i, s_f_i, 0.0, 1.0)
 
         ax.plot(Trapezoidal_Cls.t, s_ddot, '.--', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, label=r'$\ddot{s}_{%d}(t)$' % (i + 1))

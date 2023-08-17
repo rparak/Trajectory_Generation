@@ -46,7 +46,7 @@ def main():
            np.array([Mathematics.Degree_To_Radian(45.0), 0.0, 0.0], dtype=np.float32)]
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(N=100)
+    Polynomial_Cls = Lib.Trajectory.Profile.Polynomial_Cls(delta_time=0.01)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -57,7 +57,7 @@ def main():
     # Visualization of multi-axis trajectories.
     for i, (s_0_i, s_f_i) in enumerate(zip(s_0, s_f)):
         # Generation of velocity trajectories from input parameters.
-        (_, s_dot, _) = Polynomial_Cls.Generate(s_0_i, s_f_i)
+        (_, s_dot, _) = Polynomial_Cls.Generate(s_0_i, s_f_i, 0.0, 1.0)
 
         ax.plot(Polynomial_Cls.t, s_dot, '.--', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, label=r'$\dot{s}_{%d}(t)$' % (i + 1))
