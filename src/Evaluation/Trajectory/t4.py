@@ -73,8 +73,8 @@ def lspb(via,dur,tb):
     print(T_via)
 
     # ...
-    P_Cls = Profile.Polynomial_Cls(201)
-    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb[0], v_seg[0], 0.0]), T_via[0]-tb[0], T_via[0]+tb[0], 0.01)
+    P_Cls = Profile.Polynomial_Cls(0.01)
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb[0], v_seg[0], 0.0]), T_via[0]-tb[0], T_via[0]+tb[0])
     time    = P_Cls.t
     pos     = s
     speed   = s_dot
@@ -86,7 +86,7 @@ def lspb(via,dur,tb):
     speed   = np.concatenate((speed,v))
 
     # ...
-    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([via[1] + v_seg[1] * tb[2], v_seg[1],  0.0]), T_via[1]-tb[2], T_via[1]+tb[2], 0.01)
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([via[1] + v_seg[1] * tb[2], v_seg[1],  0.0]), T_via[1]-tb[2], T_via[1]+tb[2])
     time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
@@ -98,7 +98,7 @@ def lspb(via,dur,tb):
     speed   = np.concatenate((speed,v))
 
     # ...
-    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[1], 0.0]), np.array([via[2] + v_seg[2] * tb[3], v_seg[2],  0.0]), T_via[2]-tb[3], T_via[2]+tb[3], 0.01)
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[1], 0.0]), np.array([via[2] + v_seg[2] * tb[3], v_seg[2],  0.0]), T_via[2]-tb[3], T_via[2]+tb[3])
     time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
@@ -110,7 +110,7 @@ def lspb(via,dur,tb):
     speed   = np.concatenate((speed,v))
 
     # ...
-    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[-1], 0.0]), np.array([via[3], 0.0,  0.0]), T_via[-1]-tb[-1], T_via[-1]+tb[-1], 0.01)
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[-1], 0.0]), np.array([via[3], 0.0,  0.0]), T_via[-1]-tb[-1], T_via[-1]+tb[-1])
     time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))

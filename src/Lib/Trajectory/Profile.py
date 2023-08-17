@@ -98,9 +98,9 @@ class Polynomial_Cls(object):
             (1) parameter [int]: Number of time points.
         """
                 
-        return self.__t.shape[0]
+        return self.__t.size
     
-    def __Quintic_Polynomial(self, t_0, t_f) -> tp.List[tp.List[float]]:
+    def __Quintic_Polynomial(self, t_0: float, t_f: float) -> tp.List[tp.List[float]]:
         """
         Descrtiption:
             Obtain the modified polynomial matrix of degree 5.
@@ -241,7 +241,7 @@ class Trapezoidal_Cls(object):
             (1) parameter [int]: Number of time points.
         """
                 
-        return self.__t.shape[0]
+        return self.__t.size
         
     def Generate(self, s_0: float, s_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], tp.List[float], 
                                                                                    tp.List[float]]:
@@ -267,10 +267,8 @@ class Trapezoidal_Cls(object):
         s = np.zeros(self.N, dtype=np.float32)
         s_dot = s.copy(); s_ddot = s.copy()
 
-        # Because we are using normalized time, we need to transform it into steps.
-        #   Note:
-        #       T is equal to the maximum value.
-        T = self.t[-1] * self.N
+        # Get T as the maximum value of t.
+        T = self.t[-1]
 
         # Calculate the velocity automatically.
         #   Note:
@@ -286,7 +284,7 @@ class Trapezoidal_Cls(object):
 
         # Express the position (s), velocity (s_dot), and acceleration (s_ddot) of a trapezoidal 
         # trajectory.
-        for i, t_i in enumerate(self.__t * self.N):
+        for i, t_i in enumerate(self.__t):
             if t_i <= t_a:
                 # Phase 1: Acceleration.
                 s[i] = s_0 + 0.5 * a * t_i**2
