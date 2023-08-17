@@ -146,12 +146,15 @@ def mstraj(viapoints, dt, tacc, qdmax):
 
         # convert to time
         tl = abs(dq) / qdmax
+        #print(tl)
         tl = np.ceil(tl / dt) * dt
+        #print(tl)
 
         # find the total time and slowest axis
         tt = tb + tl
         slowest = np.argmax(tt)
         tseg = tt[slowest]
+
 
         # best if there is some linear motion component
         if tseg <= 2*tacc:
@@ -166,7 +169,8 @@ def mstraj(viapoints, dt, tacc, qdmax):
         qd = dq / tseg
 
         # add the blend polynomial
-        print(qd_prev, qdf)
+        #print(qd, tacc2)
+        print(q_prev + tacc2 * qd)
         qb = jtraj(q0, q_prev + tacc2 * qd, np.arange(0, taccx, dt), qd0=qd_prev, qd1=qd).q
         tg = np.vstack([tg, qb[1:,:]])
 
@@ -195,8 +199,7 @@ if __name__ == "__main__":
     # change to the one axis.
     path = np.array([[10], [60], [80], [10]])
   
-    out = mstraj(path, dt=0.1, tacc=5.0, qdmax=5.0) # extra=True)
-
+    out = mstraj(path, dt=0.1, tacc=1.0, qdmax=5.0) # extra=True)
 
 
     plt.figure()
