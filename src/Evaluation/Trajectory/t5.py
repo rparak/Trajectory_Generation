@@ -5,7 +5,7 @@ import sys
 #   Add access if it is not in the system path.
 if '../' + 'src' not in sys.path:
     sys.path.append('../..')
-import Lib.Trajectory.Utilities as Profile
+import Lib.Trajectory.Utilities as Utilities
 
 def lerp(point0, v0, t0, t1, step=1):
     # Generate a series of timestep
@@ -52,6 +52,8 @@ def lspb(via,dur,tb):
     #=====CALCULATE-VELOCITY-EACH-SEGMENT=====
     v_seg=np.zeros(dur.size)
     for i in range(0,len(via)-1):
+        # s = v * t -> t = s / v
+        #print((via[i+1]-via[i])/2.0)
         v_seg[i]=(via[i+1]-via[i])/(np.sum(dur) - 0.0 - 2*dur[i])
     print(v_seg)
 
@@ -76,7 +78,7 @@ def lspb(via,dur,tb):
     # t = s/v
 
     # ...
-    P_Cls = Utilities.Polynomial_Cls(0.01)
+    P_Cls = Utilities.Polynomial_Profile_Cls(0.01)
     (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb[0], v_seg[0], 0.0]), T_via[0]-tb[0], T_via[0]+tb[0])
     time    = P_Cls.t
     pos     = s
@@ -87,6 +89,8 @@ def lspb(via,dur,tb):
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
 
+    print(pos[-1], via[1] + v_seg[1] * tb[2])
+    print(T_via[1]-tb[2], T_via[1]+tb[2])
     (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([via[1] + v_seg[1] * tb[2], v_seg[1],  0.0]), T_via[1]-tb[2], T_via[1]+tb[2])
     time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
@@ -129,8 +133,6 @@ def lspb(via,dur,tb):
 
 via = np.asarray([10,60,80,10])
 dur = np.asarray([1,1,1])*5.0
-#tb = np.asarray([1,1,1,1])*1.0
-#print(np.asarray([1.0, 1.0, 1.0]))
 tb = np.array([1.0, 1.0, 1.0, 1.0])
 
 res=lspb(via,dur,tb)

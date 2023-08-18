@@ -278,17 +278,17 @@ class Trapezoidal_Profile_Cls(object):
         for i, t_i in enumerate(self.__t):
             if t_i <= t_a:
                 # Phase 1: Acceleration.
-                #s[i] = s_0 + 0.5 * a * t_i**2
+                s[i] = s_0 + 0.5 * a * t_i**2
                 s_dot[i] = a * t_i
                 s_ddot[i] = a
             elif t_i <= T - t_a:
                 # Phase 2: Constant velocity.
-                #s[i] = (s_f + s_0 - v * T) * 0.5 + v * t_i
+                s[i] = (s_f + s_0 - v * T) * 0.5 + v * t_i
                 s_dot[i] = v
                 s_ddot[i] = 0.0
             elif t_i <= T:
                 # Phase 3: Deceleration.
-                #s[i] = s_f - 0.5 * a * T**2 + a * T * t_i - 0.5*a * t_i**2
+                s[i] = s_f - 0.5 * a * T**2 + a * T * t_i - 0.5*a * t_i**2
                 s_dot[i] = a * (T - t_i)
                 s_ddot[i] = -a
 

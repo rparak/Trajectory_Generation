@@ -5,8 +5,9 @@ import sys
 #   Add access if it is not in the system path.
 if '../' + 'src' not in sys.path:
     sys.path.append('../..')
+import Lib.Trajectory.Utilities as Utilities
 
-import Lib.Trajectory.Utilities as Profile
+import math
 
 def lerp(point0, v0, t0, t1, step=1):
     # Generate a series of timestep
@@ -34,72 +35,78 @@ def parab(p0, v0, v1, t0, t1, step=1):
     a = np.ones(t.size)*a
     return (t,s,v,a)
 
-def lspb(via,dur,tb):
-    #1. It must start and end at the first and last waypoint respectively with zero velocity
-    #2. Note that during the linear phase acceleration is zero, velocity is constant and position is linear in time
-    # if acc.min < 0 :
-    #     print('acc must bigger than 0')
-    #     return 0
-    if ((via.size-1) != dur.size):
-        print('duration must equal to number of segment which is via-1')
-        return 0
-    if (via.size <2):
-        print('minimum of via is 2')
-        return 0
-    if (via.size != (tb.size)):
-        print('acc must equal to number of via')
-        return 0
-    
-    #=====CALCULATE-VELOCITY-EACH-SEGMENT=====
-    v_seg=np.zeros(dur.size)
-    for i in range(0,len(via)-1):
-        v_seg[i]=(via[i+1]-via[i])/(np.sum(dur) - 0.0 - 2*dur[i])
+def lspb(via, tb, qmax):
+
+    v_seg = []; dur_n = []
+    dt = 0.01; dur = 0.0
+    for i in range(len(via) - 1):
+        tacc = math.ceil(tb / dt) * dt
+        tacc2 = math.ceil(tacc / 2 / dt) * dt
+
+        if i == 0:
+            taccx = tacc2
+        else:
+            taccx = tacc
+
+        dq = via[i + 1] - via[i]
+
+        tb = taccx
+
+        tl = abs(dq) / qmax
+        tl = np.ceil(tl / dt) * dt
+
+        tt = tb + tl
+        tseg = tt
+
+        # best if there is some linear motion component
+        if tseg <= 2*tacc:
+            tseg = 2*tacc
+
+        # linear velocity from qprev to qnext
+        qd = dq / tseg
+
+        dur += (via[1]-via[0])/qd
+
+        dur_n.append(dur)
+        v_seg.append(qd)
+        
     print(v_seg)
-
-    #=====CALCULATE-ACCELERATION-EACH-VIA=====
-    a_via=np.zeros(via.size)
-    a_via[0]=(v_seg[0]-0)/tb[0]
-    for i in range(1,len(via)-1):
-        a_via[i]=(v_seg[i]-v_seg[i-1])/tb[i]
-    a_via[-1]=(0-v_seg[-1])/tb[-1]
-    #print(a_via)
-
     #=====CALCULATE-TIMING-EACH-VIA=====
     T_via=np.zeros(via.size)
     T_via[0]=0.0
     for i in range(1,len(via)-1):
-        T_via[i]=T_via[i-1]+dur[i-1]
-    T_via[-1]=T_via[-2]+dur[-1]
+        T_via[i]=T_via[i-1]+dur_n[i-1]
+    T_via[-1]=T_via[-2]+dur_n[-1]
     print(T_via)
 
-    # s = v*t
-    # 
-    # t = s/v
-
+    #print(via[0] + qd * tb)
     # ...
-    T_Cls = Profile.Trapezoidal_Profile_Cls(0.01)
-    (s, s_dot, s_ddot) = T_Cls.Generate(via[0], via[0] + v_seg[0] * tb[0], 0.0, v_seg[0], T_via[0]-tb[0], T_via[0]+tb[0])
-    time    = T_Cls.t
+    P_Cls = Utilities.Polynomial_Profile_Cls(0.01)
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb, v_seg[0], 0.0]), T_via[0]-tb, T_via[0]+tb)
+    time    = P_Cls.t
     pos     = s
     speed   = s_dot
 
-    (s, s_dot, s_ddot) = T_Cls.Generate(pos[-1], pos[-1] + v_seg[0]*((T_via[1]-tb[2]) - (T_via[0]+tb[0])), v_seg[0], v_seg[0], T_via[0]+tb[0], T_via[1]-tb[2])
-    time    = np.concatenate((time, T_Cls.t))
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([pos[-1] + v_seg[0]*((T_via[1]-tb) - (T_via[0]+tb)), v_seg[0],  0.0]), T_via[0]+tb, T_via[1]-tb)
+    time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
 
-    # (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([pos[-1] + v_seg[0]*((T_via[1]-tb[2]) - (T_via[0]+tb[0])), v_seg[0],  0.0]), T_via[0]+tb[0], T_via[1]-tb[2])
+    print(pos[-1], via[1] + v_seg[1] * tb)
+    print(T_via[1]-tb, T_via[1]+tb)
+    (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([via[1] + v_seg[1] * tb, v_seg[1],  0.0]), T_via[1]-tb, T_via[1]+tb)
+    time    = np.concatenate((time, P_Cls.t))
+    pos     = np.concatenate((pos, s))
+    speed   = np.concatenate((speed, s_dot))
 
-    return(v_seg,a_via,T_via,time,pos,speed)
+    return(None,T_via,time,pos,speed)
 
 via = np.asarray([10,60,80,10])
-dur = np.asarray([1,1,1])*5.0
-#tb = np.asarray([1,1,1,1])*1.0
-#print(np.asarray([1.0, 1.0, 1.0]))
-tb = np.array([1.0, 1.0, 1.0, 1.0])
+t_blend = 2.0
+q_max = 5.0
 
-res=lspb(via,dur,tb)
+res=lspb(via, t_blend, q_max)
 
-plt.plot(res[2],via,'--')
-plt.plot(res[3],res[4], '-')
+plt.plot(res[1],via,'--')
+plt.plot(res[2],res[3], '-')
 plt.show()
