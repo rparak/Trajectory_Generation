@@ -55,6 +55,7 @@ def lspb(via,dur,tb):
         # s = v * t -> t = s / v
         #print((via[i+1]-via[i])/2.0)
         v_seg[i]=(via[i+1]-via[i])/(np.sum(dur) - 0.0 - 2*dur[i])
+
     print(v_seg)
 
     #=====CALCULATE-ACCELERATION-EACH-VIA=====
@@ -89,8 +90,6 @@ def lspb(via,dur,tb):
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
 
-    print(pos[-1], via[1] + v_seg[1] * tb[2])
-    print(T_via[1]-tb[2], T_via[1]+tb[2])
     (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([via[1] + v_seg[1] * tb[2], v_seg[1],  0.0]), T_via[1]-tb[2], T_via[1]+tb[2])
     time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
@@ -133,10 +132,10 @@ def lspb(via,dur,tb):
 
 via = np.asarray([10,60,80,10])
 dur = np.asarray([1,1,1])*5.0
-tb = np.array([1.0, 1.0, 1.0, 1.0])
+tb = np.array([1.0, 1.0, 1.0, 1.0]) * 1.0
 
 res=lspb(via,dur,tb)
 
-plt.plot(res[2],via,'--')
+plt.plot(res[2],via,'o--')
 plt.plot(res[3],res[4], '-')
 plt.show()

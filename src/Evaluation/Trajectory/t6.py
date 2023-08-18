@@ -65,11 +65,12 @@ def lspb(via, tb, qmax):
         # linear velocity from qprev to qnext
         qd = dq / tseg
 
-        dur += (via[1]-via[0])/qd
-
+        dur += (via[i+1]-via[i])/qd
+        
         dur_n.append(dur)
         v_seg.append(qd)
         
+    print(dur_n)
     print(v_seg)
     #=====CALCULATE-TIMING-EACH-VIA=====
     T_via=np.zeros(via.size)
@@ -81,7 +82,8 @@ def lspb(via, tb, qmax):
 
     #print(via[0] + qd * tb)
     # ...
-    P_Cls = Utilities.Polynomial_Profile_Cls(0.01)
+    P_Cls = Utilities.Polynomial_Profile_Cls(0.1)
+    print(T_via[0]-tb, T_via[0]+tb)
     (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb, v_seg[0], 0.0]), T_via[0]-tb, T_via[0]+tb)
     time    = P_Cls.t
     pos     = s
@@ -92,7 +94,8 @@ def lspb(via, tb, qmax):
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
 
-    print(pos[-1], via[1] + v_seg[1] * tb)
+    print(pos[-1], v_seg[0])
+    print(via[1] + v_seg[1] * tb, v_seg[1])
     print(T_via[1]-tb, T_via[1]+tb)
     (s, s_dot, s_ddot) = P_Cls.Generate(np.array([pos[-1], v_seg[0], 0.0]), np.array([via[1] + v_seg[1] * tb, v_seg[1],  0.0]), T_via[1]-tb, T_via[1]+tb)
     time    = np.concatenate((time, P_Cls.t))
@@ -102,8 +105,8 @@ def lspb(via, tb, qmax):
     return(None,T_via,time,pos,speed)
 
 via = np.asarray([10,60,80,10])
-t_blend = 2.0
-q_max = 5.0
+t_blend = 1.0
+q_max = 20.0
 
 res=lspb(via, t_blend, q_max)
 
