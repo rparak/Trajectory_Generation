@@ -32,6 +32,7 @@ Description:
 # Change name to ... LFPB_Cls
 
 class Multi_Point_Cls(object):
+    # method = 'Polynomial', 'Parabolic'
     def __init__(self, delta_time: float, t_blend: float, v_max: float) -> None:
         self.__dt = delta_time
         self.__t_blend = t_blend
