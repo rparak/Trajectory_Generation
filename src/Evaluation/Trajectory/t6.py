@@ -83,7 +83,6 @@ def lspb(via, tb, qmax):
     #print(via[0] + qd * tb)
     # ...
     P_Cls = Utilities.Polynomial_Profile_Cls(0.1)
-    print(T_via[0]-tb, T_via[0]+tb)
     (s, s_dot, s_ddot) = P_Cls.Generate(np.array([via[0], 0.0, 0.0]), np.array([via[0] + v_seg[0] * tb, v_seg[0], 0.0]), T_via[0]-tb, T_via[0]+tb)
     time    = P_Cls.t
     pos     = s
