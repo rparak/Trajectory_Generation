@@ -122,7 +122,7 @@ def lspb(via,dur,tb):
 
     return(v_seg,a_via,T_via,time,pos,speed)
 
-via = np.asarray([10,60,80,10])
+via = np.asarray([10,60,80,30])
 dur = np.asarray([1.0,1.0,1.0])*5.0
 tb = np.array([1.0, 1.0, 1.0, 1.0]) * 1.0
 
