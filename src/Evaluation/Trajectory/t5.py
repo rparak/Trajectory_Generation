@@ -54,7 +54,8 @@ def lspb(via,dur,tb):
     for i in range(0,len(via)-1):
         # s = v * t -> t = s / v
         #print((via[i+1]-via[i])/2.0)
-        v_seg[i]=(via[i+1]-via[i])/(np.sum(dur) - 0.0 - 2*dur[i])
+        #v_seg[i]=(via[i+1]-via[i])/(np.sum(dur) - 0.0 - 2*dur[i])
+        v_seg[i]=(via[i+1]-via[i])/dur[i]
 
     print(v_seg)
 
@@ -85,31 +86,34 @@ def lspb(via,dur,tb):
     pos     = s
     speed   = s_dot
 
-    (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], pos[-1] + v_seg[0]*((T_via[1]-tb[2]) - (T_via[0]+tb[0])), v_seg[0], v_seg[0], 0.0, 0.0, T_via[0]+tb[0], T_via[1]-tb[2])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    # linear
+    t,s,v,_ = lerp(pos[-1], v_seg[0],T_via[0]+tb[1],T_via[1]-tb[2],0.01)
+    time    = np.concatenate((time,t))
+    pos     = np.concatenate((pos,s))
+    speed   = np.concatenate((speed,v))
 
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], via[1] + v_seg[1] * tb[2], v_seg[0], v_seg[1], 0.0, 0.0, T_via[1]-tb[2], T_via[1]+tb[2])
     time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
 
-    (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], pos[-1] + v_seg[1]*((T_via[2]-tb[3]) - (T_via[1]+tb[2])), v_seg[1], v_seg[1], 0.0, 0.0, T_via[1]+tb[2], T_via[2]-tb[3])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    # linear
+    t,s,v,_ = lerp(pos[-1], v_seg[1],T_via[1]+tb[2],T_via[2]-tb[3],0.01)
+    time    = np.concatenate((time,t))
+    pos     = np.concatenate((pos,s))
+    speed   = np.concatenate((speed,v))
 
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], via[2] + v_seg[2] * tb[3], v_seg[1], v_seg[2], 0.0, 0.0, T_via[2]-tb[3], T_via[2]+tb[3])
     time    = np.concatenate((time, P_Cls.t))
     pos     = np.concatenate((pos, s))
     speed   = np.concatenate((speed, s_dot))
 
-    (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], pos[-1] + v_seg[2]*((T_via[3]-tb[3]) - (T_via[2]+tb[3])), v_seg[2], v_seg[2], 0.0, 0.0, T_via[2]+tb[3], T_via[3]-tb[3])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    t,s,v,_ = lerp(pos[-1], v_seg[-1],T_via[-2]+tb[-2],T_via[-1]-tb[-1],0.01)
+    time    = np.concatenate((time,t))
+    pos     = np.concatenate((pos,s))
+    speed   = np.concatenate((speed,v))
 
+    print(T_via[-1]-tb[-1], T_via[-1]+tb[-1])
     # ...
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], via[-1], v_seg[-1], 0.0, 0.0, 0.0, T_via[-1]-tb[-1], T_via[-1]+tb[-1])
     time    = np.concatenate((time, P_Cls.t))
@@ -119,7 +123,7 @@ def lspb(via,dur,tb):
     return(v_seg,a_via,T_via,time,pos,speed)
 
 via = np.asarray([10,60,80,10])
-dur = np.asarray([1,1,1])*5.0
+dur = np.asarray([1.0,1.0,1.0])*5.0
 tb = np.array([1.0, 1.0, 1.0, 1.0]) * 1.0
 
 res=lspb(via,dur,tb)
