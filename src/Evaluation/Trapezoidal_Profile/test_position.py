@@ -37,9 +37,13 @@ def main():
     # Locate the path to the project folder.
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
-    # Initialization of multi-axis parameters for trajectory generation.
-    s_0 = Mathematics.Degree_To_Radian(np.array([10.0, -10.0, -45.0], dtype=np.float32))
-    s_f = Mathematics.Degree_To_Radian(np.array([90.0, -90.0, 45.0], dtype=np.float32))
+    # Initialization of multi-axis constraints for trajectory generation.
+    Ax_Constraints_0 = [np.array([Mathematics.Degree_To_Radian(10.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-10.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-45.0), 0.0], dtype=np.float32)]
+    Ax_Constraints_f = [np.array([Mathematics.Degree_To_Radian(90.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-90.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(45.0), 0.0], dtype=np.float32)]
 
     # Initialization of the class to generate trajectory.
     Trapezoidal_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=0.01)
@@ -51,9 +55,10 @@ def main():
     _, ax = plt.subplots()
 
     # Visualization of multi-axis trajectories.
-    for i, (s_0_i, s_f_i) in enumerate(zip(s_0, s_f)):
+    for i, (ax_0_i, ax_f_i) in enumerate(zip(Ax_Constraints_0, Ax_Constraints_f)):
         # Generation of position trajectories from input parameters.
-        (s, _, _) = Trapezoidal_Cls.Generate(s_0_i, s_f_i, 0.0, 1.0)
+        (s, _, _) = Trapezoidal_Cls.Generate(ax_0_i[0], ax_f_i[0], ax_0_i[1], ax_f_i[1], 
+                                             0.0, 1.0)
 
         ax.plot(Trapezoidal_Cls.t, s, '.--', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, label=r'$s_{%d}(t)$' % (i + 1))

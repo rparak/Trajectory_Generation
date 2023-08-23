@@ -11,8 +11,7 @@ Description:
     Some useful references about the field of trajectory generation:
         1. Modern Robotics: Mechanics, Planning, and Control, Kevin M. Lynch and Frank C. Park
         2. Trajectory Planning for Automatic Machines and Robots by Luigi Biagiotti, Claudio Melchiorri
-        3. Robotics, Vision and Control, Fundamental Algorithms in Python, Peter Corke
-        4. Introduction To Robotics, Mechanics and Control, John J. Craig
+        3. Introduction To Robotics, Mechanics and Control, John J. Craig
 """ 
 
 # Notes:

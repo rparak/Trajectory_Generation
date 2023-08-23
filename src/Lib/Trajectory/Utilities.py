@@ -123,19 +123,18 @@ class Polynomial_Profile_Cls(object):
                          [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
                          [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]], dtype=np.float32)
  
-    def Generate(self, s_0: tp.List[float], s_f: tp.List[float], t_0, t_f) -> tp.Tuple[tp.List[float], tp.List[float], 
-                                                                                       tp.List[float]]:
+    def Generate(self, s_0: float, s_f: float, v_0: float, v_f: float, a_0: float, a_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
+                                                                                                                                   tp.List[float], 
+                                                                                                                                   tp.List[float]]:
         """
         Description:
             A function to generate position, velocity, and acceleration polynomial trajectories of degree 5.
 
         Args:
-            (1, 2) s_0, s_f [Vector<float> 1x3]: Initial and final constraint configuration.
-                                                 Note:
-                                                    s_{..}[0] - Position.
-                                                    s_{..}[1] - Velocity.
-                                                    s_{..}[2] - Acceleration.
-            (3, 4) t_0, t_f [float]: Initial and final time constant.
+            (1, 2) s_0, s_f [float]: Initial and final configuration of position constraints.
+            (3, 4) v_0, v_f [float]: Initial and final configuration of velocity constraints.
+            (5, 6) a_0, a_f [float]: Initial and final configuration of acceleration constraints.
+            (7, 8) t_0, t_f [float]: Initial and final time constraints.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration polynomial trajectory of degree 5.
@@ -154,8 +153,8 @@ class Polynomial_Profile_Cls(object):
 
         # Find the coefficients c_{0 .. 5} from the equation below.
         #   Equation:
-        #       [c_{0 .. 5}] = X^(-1) * [s_0, s_f, s_dot_0, s_dot_f, s_ddot_0, s_ddot_f]
-        C = np.linalg.inv(self.__X) @ np.append(s_0, s_f)
+        #       [c_{0 .. 5}] = X^(-1) * [s_0, s_f, s_dot_0(v_0), s_dot_f(v_f), s_ddot_0(a_0), s_ddot_f(a_f)]
+        C = np.linalg.inv(self.__X) @ np.append([s_0, v_0, a_0], [s_f, v_f, a_f])
 
         # Analytic expression (position):
         #   s(t) = c_{0} + c_{1}*t + c_{2}*t^2 + c_{3}*t^3 + c_{4}*t^4 + c_{5}*t^5
@@ -234,17 +233,135 @@ class Trapezoidal_Profile_Cls(object):
                 
         return self.__t.size
         
-    def Generate(self, s_0: float, s_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], tp.List[float], 
-                                                                                   tp.List[float]]:
+    def __Method_Null_Intial_Velocities(self, s_0: float, s_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
+                                                                                                          tp.List[float], 
+                                                                                                          tp.List[float]]:
         """
         Description:
-            A function to generate position, velocity, and acceleration trapezoidal trajectories.
+            A function to generate position, velocity, and acceleration trapezoidal trajectories with null initial 
+            and final velocities.
 
         Args:
-            (1, 2) s_0, s_f [float]: Initial and final constraint configuration.
-                                     Note:
-                                        s_{..} - Position.
-            (3, 4) t_0, t_f [float]: Initial and final time constant.
+            (1, 2) s_0, s_f [float]: Initial and final configuration of position constraints.
+            (3, 4) t_0, t_f [float]: Initial and final time constraints.
+
+        Returns:
+            (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration trapezoidal trajectory.
+        """
+
+        try:
+            assert t_0 == 0.0
+
+            # Initialization of the output varliables.
+            s = np.zeros(self.N, dtype=np.float32)
+            s_dot = s.copy(); s_ddot = s.copy()
+
+            # Calculate the velocity automatically.
+            #   Note:
+            #       The velocity must be within the interval, see below:
+            #           (qf - q0) / t_f < v < 2 * ((qf - q0) / t_f)
+            v = 1.5 * ((s_f - s_0) / t_f)
+            
+            # Time of constant acceleration phase.
+            T_a = ((s_0 - s_f) + v * t_f) / v
+
+            # Express the acceleration with a simple formula.
+            a = v / T_a
+
+            # Express the position (s), velocity (s_dot), and acceleration (s_ddot) of a trapezoidal 
+            # trajectory.
+            for i, t_i in enumerate(self.__t):
+                if t_i <= T_a:
+                    # Phase 1: Acceleration.
+                    #   t -> [0.0, T_a]
+                    s[i] = s_0 + 0.5 * a * t_i**2
+                    s_dot[i] = a * t_i
+                    s_ddot[i] = a
+                elif t_i <= t_f - T_a:
+                    # Phase 2: Constant velocity.
+                    #   t -> [T_a, t_f - T_a]
+                    s[i] = s_0 - 0.5 * v * T_a + v * t_i
+                    s_dot[i] = v
+                    s_ddot[i] = 0.0
+                elif t_i <= t_f:
+                    #   t -> [t_f - T_a, t_f]
+                    # Phase 3: Deceleration.
+                    s[i] = s_f - 0.5 * a * t_f**2 + a * t_f * t_i - 0.5 * a * t_i**2
+                    s_dot[i] = a * t_f - a * t_i
+                    s_ddot[i] = -a 
+        
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print(f'[ERROR] The time parameter (t_0) must be zero, in the case of null initial and final velocities.')
+
+
+    def __Method_Non_Null_Intial_Velocities(self, s_0: float, s_f: float, v_0: float, v_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
+                                                                                                                                      tp.List[float], 
+                                                                                                                                      tp.List[float]]:
+        """
+        Description:
+            A function to generate position, velocity, and acceleration trapezoidal trajectories with non-null initial 
+            and final velocities.
+
+        Args:
+            (1, 2) s_0, s_f [float]: Initial and final configuration of position constraints.
+            (3, 4) v_0, v_f [float]: Initial and final configuration of velocity constraints.
+            (5, 6) t_0, t_f [float]: Initial and final time constraints.
+
+        Returns:
+            (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration trapezoidal trajectory.
+        """
+
+        # Initialization of the output varliables.
+        s = np.zeros(self.N, dtype=np.float32)
+        s_dot = s.copy(); s_ddot = s.copy()
+
+        # Express the velocity with a simple formula.
+        v = (v_f - v_0)
+        
+        # Time of constant acceleration phase.
+        T_a = (t_f - t_0)
+
+        # Express the acceleration with a simple formula.
+        a = v / T_a
+
+        # Express the position (s), velocity (s_dot), and acceleration (s_ddot) of a trapezoidal 
+        # trajectory.
+        for i, t_i in enumerate(self.__t):
+            t = (t_i - t_0)
+            if t_0 < t_0 + T_a:
+                # Phase 1: Acceleration. 
+                #   t -> [t_0, t0 + T_a]
+                s[i] = s_0 + v_0*t + 0.5 * a * t ** 2
+                s_dot[i] = v_0 + a*t
+                s_ddot[i] = a
+            elif t_0 + T_a < t_f - T_a:
+                # Phase 2: Constant velocity.
+                #   t -> [t_0 + T_a, t_f − T_a]
+                s[i] = s_0 + v_0 * 0.5 * T_a + v * (t - t_0 - 0.5 * T_a) 
+                s_dot[i] = v
+                s_ddot[i] = 0.0
+            elif t_f - T_a <= t_f:
+                # Phase 3: Deceleration.
+                #   t -> [t_f − T_a, t_f]
+                s[i] = s_f - v_f * (t_f - t) - ((v - v_f)/(2*T_a)) * (t_f - t)**2
+                s_dot[i] = v_f + ((v - v_f)/(T_a)) * (t_f - t)
+                s_ddot[i] = -a
+
+        return (s, s_dot, s_ddot)
+
+    def Generate(self, s_0: float, s_f: float, v_0: float, v_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
+                                                                                                           tp.List[float], 
+                                                                                                           tp.List[float]]:
+        """
+        Description:
+            A function to generate position, velocity, and acceleration trapezoidal trajectories with non-null initial 
+            and final velocities.
+
+        Args:
+            (1, 2) s_0, s_f [float]: Initial and final configuration of position constraints.
+            (3, 4) v_0, v_f [float]: Initial and final configuration of velocity constraints.
+            (5, 6) t_0, t_f [float]: Initial and final time constraints.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration trapezoidal trajectory.
@@ -254,42 +371,8 @@ class Trapezoidal_Profile_Cls(object):
         #   t_0 <= t <= t_f
         self.__t = np.arange(t_0, t_f + self.__delta_time, self.__delta_time)
 
-        # Initialization of the output varliables.
-        s = np.zeros(self.N, dtype=np.float32)
-        s_dot = s.copy(); s_ddot = s.copy()
-
-        # Get T as the maximum value of t.
-        T = self.t[-1]
-
-        # Calculate the velocity automatically.
-        #   Note:
-        #       The velocity must be within the interval, see below:
-        #           (qf - q0) / T < v < 2 * ((qf - q0) / T)
-        v = 1.5 * ((s_f - s_0) / T)
-        
-        # Time of constant acceleration phase.
-        t_a = ((s_0 - s_f) + v * T) / v
-
-        # Express the acceleration with a simple formula.
-        a = v / t_a
-
-        # Express the position (s), velocity (s_dot), and acceleration (s_ddot) of a trapezoidal 
-        # trajectory.
-        for i, t_i in enumerate(self.__t):
-            if t_i <= t_a:
-                # Phase 1: Acceleration.
-                s[i] = s_0 + 0.5 * a * t_i**2
-                s_dot[i] = a * t_i
-                s_ddot[i] = a
-            elif t_i <= T - t_a:
-                # Phase 2: Constant velocity.
-                s[i] = (s_f + s_0 - v * T) * 0.5 + v * t_i
-                s_dot[i] = v
-                s_ddot[i] = 0.0
-            elif t_i <= T:
-                # Phase 3: Deceleration.
-                s[i] = s_f - 0.5 * a * T**2 + a * T * t_i - 0.5*a * t_i**2
-                s_dot[i] = a * (T - t_i)
-                s_ddot[i] = -a
-
-        return (s, s_dot, s_ddot)
+        if v_0 == 0.0 and v_f == 0.0:  
+            return self.__Method_Null_Intial_Velocities(s_0, s_f, t_0, t_f)
+        else:
+            return self.__Method_Non_Null_Intial_Velocities(s_0, s_f, v_0, v_f, 
+                                                            t_0, t_f)
