@@ -27,9 +27,9 @@ Description:
 
 
 # Trajectory with non-null initial and final velocities ...
-
-# Change name to ... LFPB_Cls
 # Finished this week.
+
+# method = 'Trapezoidal', 'Polynomial'
 
 class Multi_Point_Cls(object):
     # method = 'Polynomial', 'Parabolic'
