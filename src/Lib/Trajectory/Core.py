@@ -29,33 +29,33 @@ Description:
 # Trajectory with non-null initial and final velocities ...
 # Finished this week.
 
-# method = 'Trapezoidal', 'Polynomial'
-
 class Multi_Point_Cls(object):
-    # method = 'Polynomial', 'Parabolic'
-    def __init__(self, delta_time: float, t_blend: float, v_max: float) -> None:
-        self.__dt = delta_time
-        self.__t_blend = t_blend
-        self.__v_max = v_max
+    def __init__(self, method: str, delta_time: float) -> None:
+        try:
+            method in ['Trapezoidal', 'Polynomial']
+
+            self.__method = method
+
+            # The difference (spacing) between the time values.
+            self.__delta_time = delta_time
+
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
         
-    def Generate(self, P: tp.List[tp.List[float]]):
+    def Generate(self, P: tp.List[tp.List[float]], t: tp.List[float], t_blend: tp.List[float]) -> None:
         """
         Description:
             ...
 
         Args:
-            (1) P [Vector<float> mx1]: Input control points to be used for trajectory generation.
+            (1) P [Vector<float> mx1]: Input control points (waypoints) to be used for trajectory generation.
                                         Note:
                                         Where m is the number of points.
+            (2) ... []: ..
+            (3) ... []: ..
+
+        Returns:
+            (1) parameter []: ...
         """
 
-        # Initialization of the class to generate trajectory.
-        Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Cls(N=100)
-
-        # ...
-        s_previous = P[0]; s_dot_previous = np.array([0.0], dtype=np.float32)
-        s = np.empty((0,1), dtype=np.float32)
-        for i, P_i in enumerate(P[1::]):
-            pass
-
-        return (np.linspace(Lib.Trajectory.Utilities.CONST_T_0, Lib.Trajectory.Utilities.CONST_T_1, s.size), s)
+        return None
