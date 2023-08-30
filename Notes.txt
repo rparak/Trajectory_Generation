@@ -6,6 +6,7 @@ https://github.com/petercorke/robotics-toolbox-python/blob/master/roboticstoolbo
 https://github.com/novice1011/trajectory-planning
 https://github.com/Sarrasor/RoboticManipulators/tree/main/utils
 https://github.com/snrdevs/multi_segment_trajectory_ros/tree/master/src/trajectory_creation
+https://github.com/NxRLab/ModernRobotics/blob/master/packages/Python/modern_robotics/core.py
 
 # PDF
 https://epub.jku.at/obvulihs/download/pdf/5841037?originalFilename=true
