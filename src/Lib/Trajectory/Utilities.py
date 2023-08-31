@@ -35,12 +35,9 @@ class Polynomial_Profile_Cls(object):
     Description:
         The specific class for generating the polynomial trajectory of degree 5 (quintic) from input constraints.
 
-        Note:
-            A polynomial of degree 5 (quintic) was chosen to obtain the acceleration.
-
     Initialization of the Class:
         Args:
-            (1) delta_time [fluat]: The difference (spacing) between the time values.
+            (1) delta_time [float]: The difference (spacing) between the time values.
 
         Example:
             Initialization:
@@ -182,7 +179,7 @@ class Trapezoidal_Profile_Cls(object):
 
     Initialization of the Class:
         Args:
-            (1) delta_time [fluat]: The difference (spacing) between the time values.
+            (1) delta_time [float]: The difference (spacing) between the time values.
 
         Example:
             Initialization:
