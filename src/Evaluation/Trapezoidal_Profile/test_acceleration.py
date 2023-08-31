@@ -60,7 +60,7 @@ def main():
         (_, _, s_ddot) = Trapezoidal_Cls.Generate(ax_0_i[0], ax_f_i[0], ax_0_i[1], ax_f_i[1], 
                                                   0.0, 1.0)
 
-        ax.plot(Trapezoidal_Cls.t, s_ddot, '.--', linewidth=1.0, markersize = 3.0, 
+        ax.plot(Trapezoidal_Cls.t, s_ddot, '.-', linewidth=1.0, markersize = 3.0, 
                 markeredgewidth = 1.5, label=r'$\ddot{s}_{%d}(t)$' % (i + 1))
 
     # Set parameters of the graph (plot).
