@@ -21,7 +21,7 @@ SOFTWARE.
 Author   : Roman Parak
 Email    : Roman.Parak@outlook.com
 Github   : https://github.com/rparak
-File Name: Profile.py
+File Name: Utilities.py
 ## =========================================================================== ## 
 """
 
@@ -30,6 +30,90 @@ import numpy as np
 # Typing (Support for type hints)
 import typing as tp
 
+class Linear_Interpolation_Cls(object):
+    """
+    Description:
+        ...
+
+    Initialization of the Class:
+        Args:
+            (1) delta_time [float]: The difference (spacing) between the time values.
+
+        Example:
+            Initialization:
+                # Assignment of the variables.
+                delta_time = 0.01
+
+                # Initialization of the class.
+                Cls = Linear_Interpolation_Cls(delta_time)
+
+            Features:
+                # Properties of the class.
+                Cls.t
+                ...
+                Cls.N
+
+                # Functions of the class.
+                Cls.Generate(1.57, 0.0, 0.0, 0.0, 0.0)
+    """
+        
+    def __init__(self, delta_time: float) -> None:
+        # The difference (spacing) between the time values.
+        self.__delta_time = delta_time
+
+    @property
+    def t(self) -> tp.List[float]:
+        """
+        Description:
+            Get evenly spaced time values at the following interval, see below:
+                t_0 <= t <= t_f
+
+        Returns:
+            (1) parameter [Vector<float> 1xn]: Time values.
+                                                Note:
+                                                    Where n is the number of time values.
+        """
+                
+        return self.__t
+    
+    @property
+    def N(self) -> int:
+        """
+        Description:
+           Get the number of time points of the trajectory.
+        
+        Returns:
+            (1) parameter [int]: Number of time points.
+        """
+                
+        return self.__t.size
+    
+    def Generate(self, s_f: float, v_0: float, v_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
+                                                                                               tp.List[float], 
+                                                                                               tp.List[float]]:
+        """
+        Description:
+            A function to generate position, velocity, and acceleration of linear trajectories.
+
+        Args:
+            (1) s_f [float]: Final configuration of position constraints.
+            (2, 3) v_0, v_f [float]: Initial and final configuration of velocity constraints.
+            (4, 5) t_0, t_f [float]: Initial and final time constraints.
+
+        Returns:
+            (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration polynomial trajectory of degree 5.
+        """
+
+        # Get evenly distributed time values in a given interval.
+        #   t_0 <= t <= t_f
+        self.__t = np.arange(t_0, t_f + self.__delta_time, self.__delta_time)
+
+        # Initialization of the output varliables.
+        s = np.zeros(self.__t.size, dtype=np.float32)
+        s_dot = s.copy(); s_ddot = s.copy()
+        
+        return (s, s_dot, s_ddot)
+    
 class Polynomial_Profile_Cls(object):
     """
     Description:
@@ -54,7 +138,8 @@ class Polynomial_Profile_Cls(object):
                 Cls.N
 
                 # Functions of the class.
-                Cls.Generate([0.0, 0.0, 0.0], [1.57, 0.0, 0.0], 0.0, 1.0)
+                Cls.Generate(0.0, 1.57, 0.0, 0.0, 0.0, 0.0, 
+                             0.0, 1.0)
     """
             
     def __init__(self, delta_time: float) -> None:
@@ -125,7 +210,7 @@ class Polynomial_Profile_Cls(object):
                                                                                                                                    tp.List[float]]:
         """
         Description:
-            A function to generate position, velocity, and acceleration polynomial trajectories of degree 5.
+            A function to generate position, velocity, and acceleration of polynomial trajectories (degree 5 - quintic).
 
         Args:
             (1, 2) s_0, s_f [float]: Initial and final configuration of position constraints.
@@ -196,7 +281,8 @@ class Trapezoidal_Profile_Cls(object):
                 Cls.N
 
                 # Functions of the class.
-                Cls.Generate(0.0, 1.57)
+                Cls.Generate(0.0, 1.57, 0.0, 0.0,
+                             0.0, 1.0)
     """
              
     def __init__(self, delta_time: float) -> None:
@@ -368,7 +454,7 @@ class Trapezoidal_Profile_Cls(object):
                                                                                                            tp.List[float]]:
         """
         Description:
-            A function to generate position, velocity, and acceleration trapezoidal trajectories with non-null initial 
+            A function to generate position, velocity, and acceleration of trapezoidal trajectories with non-null initial 
             and final velocities.
 
         Args:

@@ -1,3 +1,30 @@
+"""
+## =========================================================================== ## 
+MIT License
+Copyright (c) 2023 Roman Parak
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+## =========================================================================== ## 
+Author   : Roman Parak
+Email    : Roman.Parak@outlook.com
+Github   : https://github.com/rparak
+File Name: Core.py
+## =========================================================================== ## 
+"""
+
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Typing (Support for type hints)
@@ -30,6 +57,34 @@ Description:
 # Finished this week.
 
 class Multi_Point_Cls(object):
+    """
+    Description:
+        ...
+
+    Initialization of the Class:
+        Args:
+            (1) method [string]: ...
+            (2) delta_time [float]: The difference (spacing) between the time values.
+
+        Example:
+            Initialization:
+                # Assignment of the variables.
+                method = 'Trepezoidal'
+                delta_time = 0.01
+
+                # Initialization of the class.
+                Cls = Multi_Point_Cls(method, delta_time)
+
+            Features:
+                # Properties of the class.
+                Cls.t
+                ...
+                Cls.N
+
+                # Functions of the class.
+                Cls.Generate()
+    """
+
     def __init__(self, method: str, delta_time: float) -> None:
         try:
             method in ['Trapezoidal', 'Polynomial']
@@ -42,6 +97,35 @@ class Multi_Point_Cls(object):
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
         
+    @property
+    def t(self) -> tp.List[float]:
+        """
+        Description:
+            Get evenly spaced time values at the following interval, see below:
+                t_0 <= t <= t_f,
+
+                where t_0 is ... and t_f is .. .
+
+        Returns:
+            (1) parameter [Vector<float> 1xn]: Time values.
+                                                Note:
+                                                    Where n is the number of time values.
+        """
+                
+        return self.__t
+    
+    @property
+    def N(self) -> int:
+        """
+        Description:
+           Get the number of time points of the trajectory.
+        
+        Returns:
+            (1) parameter [int]: Number of time points.
+        """
+                
+        return self.__t.size
+    
     def Generate(self, P: tp.List[tp.List[float]], t: tp.List[float], t_blend: tp.List[float]) -> None:
         """
         Description:
