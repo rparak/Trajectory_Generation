@@ -32,10 +32,10 @@ CONST_METHOD = 'Trapezoidal'
 def main():
     """
     Description:
-       A program to generate multi-axis position trajectories of fifth degree polynomials.
+       A program to generate ....
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Profile.py
+            ../Lib/Trajectory/Core.py
     """
     
     # Locate the path to the project folder.
