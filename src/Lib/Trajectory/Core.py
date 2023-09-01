@@ -41,29 +41,16 @@ Description:
         3. Introduction To Robotics, Mechanics and Control, John J. Craig
 """ 
 
-# Notes:
-# https://github.com/novice1011/trajectory-planning
-# https://repository.gatech.edu/server/api/core/bitstreams/34337c0d-c60a-4235-82da-7c87d275ff13/content
-# https://www.slideshare.net/66551122/lecture-1-trajectory-generation
-# books
-# https://www.researchgate.net/publication/360441729_Multi-segment_trajectory_tracking_of_the_redundant_space_robot_for_smooth_motion_planning_based_on_interpolation_of_linear_polynomials_with_parabolic_blend
-# https://www.researchgate.net/publication/325810192_Creating_Through_Points_in_Linear_Function_with_Parabolic_Blends_Path_by_Optimization_Method?enrichId=rgreq-65d1dcee4edc6a72c802c7a89774de87-XXX&enrichSource=Y292ZXJQYWdlOzMyNTgxMDE5MjtBUzo2Mzg0NzEyNTMyOTEwMDhAMTUyOTIzNDgxNzU3OA%3D%3D&el=1_x_3&_esc=publicationCoverPdf
-# Turning Paths Into Trajectories Using Parabolic Blends
-# https://github.com/SakshayMahna/Robotics-Mechanics/tree/main/Part-14-CubicInterpolation/tools
-# http://timeconqueror.blogspot.com/2012/10/trajectory-generation-solution.html
-
-
-# Trajectory with non-null initial and final velocities ...
-# Finished this week.
-
-class Multi_Point_Cls(object):
+class Multi_Segment_Cls(object):
     """
     Description:
-        ...
+        The specific class for generating the multi-segment trajectory using the two different methods.
 
     Initialization of the Class:
         Args:
-            (1) method [string]: ...
+            (1) method [string]: The method of the multi-segment trajectory generation. 
+                                    Note:
+                                        method = 'Trapezoidal', 'Polynomial'
             (2) delta_time [float]: The difference (spacing) between the time values.
 
         Example:
@@ -73,7 +60,7 @@ class Multi_Point_Cls(object):
                 delta_time = 0.01
 
                 # Initialization of the class.
-                Cls = Multi_Point_Cls(method, delta_time)
+                Cls = Multi_Segment_Cls(method, delta_time)
 
             Features:
                 # Properties of the class.
@@ -89,6 +76,7 @@ class Multi_Point_Cls(object):
         try:
             method in ['Trapezoidal', 'Polynomial']
 
+            # The method of the multi-segment trajectory generation. 
             self.__method = method
 
             # The difference (spacing) between the time values.
@@ -96,6 +84,7 @@ class Multi_Point_Cls(object):
 
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')
+            print(f'[ERROR] Incorrect method name of the class input parameter. The method must be named as "Trapezoidal" or "Polynomial", not as "{method}".')
         
     @property
     def t(self) -> tp.List[float]:
@@ -104,7 +93,8 @@ class Multi_Point_Cls(object):
             Get evenly spaced time values at the following interval, see below:
                 t_0 <= t <= t_f,
 
-                where t_0 is ... and t_f is .. .
+                where t_0 is 0.0 and t_f is is the sum of the duration between 
+                trajectory segments.
 
         Returns:
             (1) parameter [Vector<float> 1xn]: Time values.
@@ -126,20 +116,127 @@ class Multi_Point_Cls(object):
                 
         return self.__t.size
     
-    def Generate(self, P: tp.List[tp.List[float]], t: tp.List[float], t_blend: tp.List[float]) -> None:
+    def __Generate_Trapezoidal(self, P: tp.List[tp.List[float]], t_blend: tp.List[float], T: tp.List[float], 
+                                                                                          v: tp.List[float]) -> tp.Tuple[tp.List[float], 
+                                                                                                                         tp.List[float], 
+                                                                                                                         tp.List[float]]:
         """
         Description:
-            ...
+            A function to generate position, velocity, and acceleration of a multi-segment trajectory using 
+            the trapezoidal trajectories method.
 
         Args:
-            (1) P [Vector<float> mx1]: Input control points (waypoints) to be used for trajectory generation.
-                                        Note:
-                                        Where m is the number of points.
-            (2) ... []: ..
-            (3) ... []: ..
+            (1) P [Vector<float> 1xn]: Input control points (waypoints) to be used for trajectory generation.
+            (2) t_blend [Vector<float> 1xn]: Duration of the blend phase.
+            (3) T [Vector<float> 1xn]: The velocity of each trajectory segment.
+            (4) v [Vector<float> 1x(n-1)]: The time of each trajectory segment.
 
         Returns:
-            (1) parameter []: ...
+            (1 - 3) parameter [Vector<float> 1xN]: Position, velocity and acceleration trapezoidal trajectory.
+                                                    Note:
+                                                        Where N is the number of time points of the trajectory.
+
+        Note:
+            The variable n equals the number of points.
+        """
+                
+        # Initialization of the output varliables.
+        s = np.zeros(self.__t.size, dtype=np.float32)
+        s_dot = s.copy(); s_ddot = s.copy()
+
+        # Initialization of the class to generate trajectory using a linear function.
+        L_Cls = Lib.Trajectory.Utilities.Linear_Function_Cls(self.__delta_time)
+
+        # Initialization of the class to generate trajectory using using a trapezoidal 
+        # profile.
+        T_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(self.__delta_time)
+
+        return (s, s_dot, s_ddot)
+
+    def __Generate_Polynomial(self, P: tp.List[tp.List[float]], t_blend: tp.List[float], T: tp.List[float], 
+                                                                                         v: tp.List[float]) -> tp.Tuple[tp.List[float], 
+                                                                                                                        tp.List[float], 
+                                                                                                                        tp.List[float]]:
+        """
+        Description:
+            A function to generate position, velocity, and acceleration of a multi-segment trajectory using 
+            the polynomial trajectories (degree 5 - quintic) method.
+
+        Args:
+            (1) P [Vector<float> 1xn]: Input control points (waypoints) to be used for trajectory generation.
+            (2) t_blend [Vector<float> 1xn]: Duration of the blend phase.
+            (3) T [Vector<float> 1xn]: The velocity of each trajectory segment.
+            (4) v [Vector<float> 1x(n-1)]: The time of each trajectory segment.
+
+        Returns:
+            (1 - 3) parameter [Vector<float> 1xN]: Position, velocity and acceleration trapezoidal trajectory.
+                                                    Note:
+                                                        Where N is the number of time points of the trajectory.
+
+        Note:
+            The variable n equals the number of points.
+        """
+                
+        # Initialization of the output varliables.
+        s = np.zeros(self.__t.size, dtype=np.float32)
+        s_dot = s.copy(); s_ddot = s.copy()
+
+        # Initialization of the class to generate trajectory using a linear function.
+        L_Cls = Lib.Trajectory.Utilities.Linear_Function_Cls(self.__delta_time)
+
+        # Initialization of the class to generate trajectory using using a polynomial 
+        # profile of degree 5 (quintic).
+        P_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(self.__delta_time)
+
+        return (s, s_dot, s_ddot)
+
+    def Generate(self, P: tp.List[tp.List[float]], delta_T: tp.List[float], t_blend: tp.List[float]) -> tp.Tuple[tp.List[float], 
+                                                                                                           tp.List[float], 
+                                                                                                           tp.List[float],
+                                                                                                           tp.List[float]]:
+        """
+        Description:
+            A function to generate position, velocity, and acceleration of a multi-segment trajectory using 
+            the selected method.
+
+        Args:
+            (1) P [Vector<float> 1xn]: Input control points (waypoints) to be used for trajectory generation.
+            (2) delta_T [Vector<float> 1x(n-1)]: Trajectory duration between control points.
+            (3) t_blend [Vector<float> 1xn]: Duration of the blend phase.
+
+        Returns:
+            (1 - 3) parameter [Vector<float> 1xN]: Position, velocity and acceleration trapezoidal trajectory.
+                                                    Note:
+                                                        Where N is the number of time points of the trajectory.
+            (4) parameter [Vector<float> 1xn]: The time of each trajectory segment.
+                                                Note:
+                                                    when the trajectory reaches the control points
+
+        Note:
+            The variable n equals the number of points.
         """
 
-        return None
+        try:
+            assert P.size == t_blend.size and P.size == t.size + 1
+
+            # Express the velocity of each trajectory segment.
+            v = np.zeros(delta_T.size, dtype=np.float32)
+            for i, (P_i, P_ii, delta_T_i) in enumerate(zip(P, P[1::], delta_T)):
+                v[i] = (P_ii - P_i)/delta_T_i
+
+            # Express the time of each trajectory segment.
+            T = np.zeros(P.size, dtype=np.float32)
+            for i, delta_T_i in enumerate(delta_T_i, start=1):
+                T[i] = T[i-1] + delta_T_i
+
+            if self.__method == 'Trapezoidal':
+                (s, s_dot, s_ddot) = self.__Generate_Trapezoidal(P, t_blend, T, v)
+            else:
+                (s, s_dot, s_ddot) = self.__Generate_Polynomial(P, t_blend, T, v)
+            
+            return (T, s, s_dot, s_ddot)
+        
+        except AssertionError as error:
+            print(f'[ERROR] Information: {error}')
+            print('[ERROR] Incorrect size of function input parameters.')
+            print('[ERROR] The expected size of the input parameters must be of the form P(1, n), t(1, n-1) and t_blend(1, n).')

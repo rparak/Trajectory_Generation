@@ -73,13 +73,15 @@ def lspb(via,dur,tb):
     for i in range(1,len(via)-1):
         T_via[i]=T_via[i-1]+dur[i-1]
     T_via[-1]=T_via[-2]+dur[-1]
+
+    
     print(T_via)
 
     # s = v*t
     # 
     # t = s/v
 
-    L_Cls = Utilities.Linear_Interpolation_Cls(0.01)
+    L_Cls = Utilities.Linear_Function_Cls(0.01)
     # ...
     P_Cls = Utilities.Polynomial_Profile_Cls(0.01)
     (s, s_dot, s_ddot) = P_Cls.Generate(via[0], via[0] + v_seg[0] * tb[0], 0.0, v_seg[0], 0.0, 0.0, T_via[0]-tb[0], T_via[0]+tb[0])
@@ -119,6 +121,8 @@ def lspb(via,dur,tb):
     pos     = np.concatenate((pos, s), dtype=np.float32)
     speed   = np.concatenate((speed, s_dot))
 
+    print(time.size)
+
     return(v_seg,a_via,T_via,time,pos,speed)
 
 via = np.asarray([10,60,80,10])
@@ -126,7 +130,8 @@ dur = np.asarray([1.0,1.0,1.0])*5.0
 tb = np.array([1.0, 1.0, 1.0, 1.0]) * 1.0
 
 res=lspb(via,dur,tb)
+print(res[1])
 
-plt.plot(res[2],via,'o--')
-plt.plot(res[3],res[4], '-')
+plt.plot(res[2],[0.0, res[0][0], res[0][1], res[0][2]],'o--')
+plt.plot(res[3],res[5], '-')
 plt.show()
