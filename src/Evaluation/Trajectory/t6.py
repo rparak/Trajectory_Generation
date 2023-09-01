@@ -74,44 +74,55 @@ def lspb(via,dur,tb):
     T_via[-1]=T_via[-2]+dur[-1]
     print(T_via)
 
-    L_Cls = Utilities.Linear_Interpolation_Cls(0.01)
     # ...
-    P_Cls = Utilities.Trapezoidal_Profile_Cls(0.01)
+    P_Cls = Utilities.Trapezoidal_Profile_Cls(0.05)
     (s, s_dot, s_ddot) = P_Cls.Generate(via[0], via[0] + v_seg[0] * tb[0], 0.0, v_seg[0], T_via[0]-tb[0], T_via[0]+tb[0])
     time    = P_Cls.t
     pos     = s
     speed   = s_dot
 
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], pos[-1] + v_seg[0]*((T_via[1]-tb[2]) - (T_via[0]+tb[0])), v_seg[0], v_seg[0], T_via[0]+tb[0], T_via[1]-tb[2])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
 
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], via[1] + v_seg[1] * tb[2], v_seg[0], v_seg[1], T_via[1]-tb[2], T_via[1]+tb[2])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
 
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], pos[-1] + v_seg[1]*((T_via[2]-tb[3]) - (T_via[1]+tb[2])), v_seg[1], v_seg[1], T_via[1]+tb[2], T_via[2]-tb[3])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
 
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], via[2] + v_seg[2] * tb[3], v_seg[1], v_seg[2], T_via[2]-tb[3], T_via[2]+tb[3])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
+
+    """
+    (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], pos[-1] + v_seg[1]*((T_via[2]-tb[3]) - (T_via[1]+tb[2])), v_seg[1], v_seg[1], T_via[1]+tb[2], T_via[2]-tb[3])
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
+
+    (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], via[2] + v_seg[2] * tb[3], v_seg[1], v_seg[2], T_via[2]-tb[3], T_via[2]+tb[3])
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
 
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], pos[-1] + v_seg[2]*((T_via[3]-tb[3]) - (T_via[2]+tb[3])), v_seg[2], v_seg[2], T_via[2]+tb[3], T_via[3]-tb[3])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
 
     # ...
     (s, s_dot, s_ddot) = P_Cls.Generate(pos[-1], via[-1], v_seg[-1], 0.0, T_via[-1]-tb[-1], T_via[-1]+tb[-1])
-    time    = np.concatenate((time, P_Cls.t))
-    pos     = np.concatenate((pos, s))
-    speed   = np.concatenate((speed, s_dot))
+    time    = np.append(time, P_Cls.t)
+    pos     = np.append(pos, s)
+    speed   = np.append(speed, s_dot)
+    """
 
     return(v_seg,a_via,T_via,time,pos,speed)
 

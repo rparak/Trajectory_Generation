@@ -1,10 +1,27 @@
 import numpy as np
 
-P = np.asarray([10,60,80,10])
-t = np.asarray([1.0,1.0,1.0])*5.0
+def f(x):
+    # Define your curve function here (e.g., f(x) = x^2)
+    return x**2
 
-v = np.zeros(t.size, dtype=np.float32)
-for i, (P_i, P_ii, t_i) in enumerate(zip(P, P[1::], t)):
-    v[i] = (P_ii - P_i)/t_i
+def curve_length(f, a, b, n):
+    # Calculate the length of the curve using the trapezoidal rule
+    delta_x = (b - a) / n
+    x_values = np.linspace(a, b, n + 1)
+    y_values = f(x_values)
+    
+    length = 0
+    for i in range(n):
+        length += np.sqrt((x_values[i + 1] - x_values[i])**2 + (y_values[i + 1] - y_values[i])**2)
+    
+    return length
 
-print(v)
+# Define the interval [a, b] and the number of subdivisions (n)
+a = 0
+b = 2
+n = 100
+
+# Calculate the length of the curve
+curve_length_result = curve_length(f, a, b, n)
+
+print(curve_length_result)

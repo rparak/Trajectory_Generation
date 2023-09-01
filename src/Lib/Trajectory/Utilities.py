@@ -255,7 +255,6 @@ class Trapezoidal_Profile_Cls(object):
 
         return (s, s_dot, s_ddot)
 
-
     def __Method_Non_Null_Intial_Velocities(self, s_0: float, s_f: float, v_0: float, v_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
                                                                                                                                       tp.List[float], 
                                                                                                                                       tp.List[float]]:

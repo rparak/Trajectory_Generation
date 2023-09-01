@@ -132,6 +132,6 @@ tb = np.array([1.0, 1.0, 1.0, 1.0]) * 1.0
 res=lspb(via,dur,tb)
 print(res[1])
 
-plt.plot(res[2],[0.0, res[0][0], res[0][1], res[0][2]],'o--')
-plt.plot(res[3],res[5], '-')
+plt.plot(res[2],via,'o--')
+plt.plot(res[3],res[4], '-')
 plt.show()

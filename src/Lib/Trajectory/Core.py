@@ -32,6 +32,8 @@ import typing as tp
 # Custom Script:
 #   ../Lib/Trajectory/Utilities
 import Lib.Trajectory.Utilities
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
 
 """
 Description:
@@ -116,6 +118,29 @@ class Multi_Segment_Cls(object):
                 
         return self.__t.size
     
+    def __Get_Arc_Length(self, s_dot: tp.List[float]) -> float:
+        """
+        Description:
+            Obtain the arc length L(t) of the general parametric curve.
+
+            The arc length L(t) is defined by:
+                L(t) = \int_{0}^{t} ||s'(t)||_{2} dt.
+
+        Args:
+            (1) s_dot [Vector<float> 1xN]: Velocity part of the trapezoidal trajectory.
+                                                    Note:
+                                                        Where N is the number of time points of the trajectory.
+
+        Returns:
+            (1) parameter [float]: The arc length L(t) of the general parametric curve.
+        """
+                
+        L = 0.0
+        for _, s_dot_i in enumerate(s_dot):
+            L += Mathematics.Euclidean_Norm(s_dot_i)
+
+        return L * self.__delta_time
+    
     def __Generate_Trapezoidal(self, P: tp.List[tp.List[float]], t_blend: tp.List[float], T: tp.List[float], 
                                                                                           v: tp.List[float]) -> tp.Tuple[tp.List[float], 
                                                                                                                          tp.List[float], 
@@ -140,16 +165,36 @@ class Multi_Segment_Cls(object):
             The variable n equals the number of points.
         """
                 
-        # Initialization of the output varliables.
-        s = np.zeros(self.__t.size, dtype=np.float32)
-        s_dot = s.copy(); s_ddot = s.copy()
-
-        # Initialization of the class to generate trajectory using a linear function.
-        L_Cls = Lib.Trajectory.Utilities.Linear_Function_Cls(self.__delta_time)
-
         # Initialization of the class to generate trajectory using using a trapezoidal 
         # profile.
         T_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(self.__delta_time)
+
+        # Phase 1: The trajectory starts.
+        (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(P[0], P[0] + v[0] * t_blend[0], 0.0, v[0], T[0] - t_blend[0], T[0] + t_blend[0])
+        self.__t = T_Cls.t
+        s = s_tmp; s_dot = s_dot_tmp; s_ddot = s_ddot_tmp
+
+        # Phase 2: The trajectory alternates between linear and blend phases.
+        for _, (v_i, v_ii, T_i, T_ii, t_blend_i, t_blend_ii) in enumerate(zip(v, v[1::], T, T[1::], t_blend, t_blend[1::])):
+            # Linear phase.
+            (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], s[-1] + v_i*((T_ii - t_blend_ii) - (T_i + t_blend_i)), v_i, v_i, T_i + t_blend_i, T_ii - t_blend_ii)
+            self.__t = np.concatenate((self.__t, T_Cls.t), dtype=np.float32)
+            s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
+
+            # Trapezoidal blends phase.
+            (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], P[1] + v_ii * t_blend_ii, v_i, v_ii, T_ii - t_blend_ii, T_ii + t_blend_ii)
+            self.__t = np.concatenate((self.__t, T_Cls.t), dtype=np.float32)
+            s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32) 
+
+        # Phase 3: The trajectory ends.
+        #   Linear phase.
+        (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], s[-1] + v[-1]*((T[-1] - t_blend[-1]) - (T[-2] + t_blend[-2])), v[-1], v[-1], T[-2] + t_blend[-2], T[-1] - t_blend[-1])
+        self.__t = np.concatenate((self.__t, T_Cls.t), dtype=np.float32)
+        s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
+        #   Trapezoidal blends phase.
+        (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], P[-1], v[-1], 0.0, T[-1] - t_blend[-1], T[-1] + t_blend[-1])
+        self.__t = np.concatenate((self.__t, T_Cls.t), dtype=np.float32)
+        s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
 
         return (s, s_dot, s_ddot)
 
@@ -177,10 +222,6 @@ class Multi_Segment_Cls(object):
             The variable n equals the number of points.
         """
                 
-        # Initialization of the output varliables.
-        s = np.zeros(self.__t.size, dtype=np.float32)
-        s_dot = s.copy(); s_ddot = s.copy()
-
         # Initialization of the class to generate trajectory using a linear function.
         L_Cls = Lib.Trajectory.Utilities.Linear_Function_Cls(self.__delta_time)
 
@@ -191,9 +232,10 @@ class Multi_Segment_Cls(object):
         return (s, s_dot, s_ddot)
 
     def Generate(self, P: tp.List[tp.List[float]], delta_T: tp.List[float], t_blend: tp.List[float]) -> tp.Tuple[tp.List[float], 
-                                                                                                           tp.List[float], 
-                                                                                                           tp.List[float],
-                                                                                                           tp.List[float]]:
+                                                                                                                 tp.List[float], 
+                                                                                                                 tp.List[float],
+                                                                                                                 tp.List[float],
+                                                                                                                 float]:
         """
         Description:
             A function to generate position, velocity, and acceleration of a multi-segment trajectory using 
@@ -211,13 +253,14 @@ class Multi_Segment_Cls(object):
             (4) parameter [Vector<float> 1xn]: The time of each trajectory segment.
                                                 Note:
                                                     when the trajectory reaches the control points
+            (5) parameter [float]: The arc length L(t) of the general parametric curve.
 
         Note:
             The variable n equals the number of points.
         """
 
         try:
-            assert P.size == t_blend.size and P.size == t.size + 1
+            assert P.size == t_blend.size and P.size == delta_T.size + 1
 
             # Express the velocity of each trajectory segment.
             v = np.zeros(delta_T.size, dtype=np.float32)
@@ -226,15 +269,15 @@ class Multi_Segment_Cls(object):
 
             # Express the time of each trajectory segment.
             T = np.zeros(P.size, dtype=np.float32)
-            for i, delta_T_i in enumerate(delta_T_i, start=1):
+            for i, delta_T_i in enumerate(delta_T, start=1):
                 T[i] = T[i-1] + delta_T_i
 
             if self.__method == 'Trapezoidal':
                 (s, s_dot, s_ddot) = self.__Generate_Trapezoidal(P, t_blend, T, v)
             else:
                 (s, s_dot, s_ddot) = self.__Generate_Polynomial(P, t_blend, T, v)
-            
-            return (T, s, s_dot, s_ddot)
+
+            return (s, s_dot, s_ddot, T, self.__Get_Arc_Length(s_dot))
         
         except AssertionError as error:
             print(f'[ERROR] Information: {error}')

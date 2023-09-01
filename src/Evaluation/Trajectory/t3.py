@@ -69,32 +69,32 @@ def lspb(via,dur,tb):
     # q(t) = q_i + v_{i-1}(t-T_i) + \frac{1}{2}a(t-T_i+\frac{t_i^b}{2})^2  #parabolic phase
     # q(t) = q_i + v_i*(t-T_i)                 #linear phase
     #parabolic
-    t,s,v,_ = parab(via[0], 0, v_seg[0], T_via[0]-tb[0], T_via[0]+tb[0], 0.01)
+    t,s,v,_ = parab(via[0], 0, v_seg[0], T_via[0]-tb[0], T_via[0]+tb[0], 0.05)
     time    = t
     pos     = s
     speed   = v
     
     for i in range(1,len(via)-1):
         # linear
-        t,s,v,_ = lerp(pos[-1],v_seg[i-1],T_via[i-1]+tb[i],T_via[i]-tb[i+1],0.01)
+        t,s,v,_ = lerp(pos[-1],v_seg[i-1],T_via[i-1]+tb[i],T_via[i]-tb[i+1],0.05)
         time    = np.concatenate((time,t))
         pos     = np.concatenate((pos,s))
         speed   = np.concatenate((speed,v))
 
         #parabolic
-        t,s,v,_= parab(pos[-1], v_seg[i-1], v_seg[i], T_via[i]-tb[i+1], T_via[i]+tb[i+1], 0.01)
+        t,s,v,_= parab(pos[-1], v_seg[i-1], v_seg[i], T_via[i]-tb[i+1], T_via[i]+tb[i+1], 0.05)
         time    = np.concatenate((time,t))
         pos     = np.concatenate((pos,s))
         speed   = np.concatenate((speed,v))
 
     # linear
-    t,s,v,_ = lerp(pos[-1],v_seg[-1],T_via[-2]+tb[-2],T_via[-1]-tb[-1],0.01)
+    t,s,v,_ = lerp(pos[-1],v_seg[-1],T_via[-2]+tb[-2],T_via[-1]-tb[-1],0.05)
     time    = np.concatenate((time,t))
     pos     = np.concatenate((pos,s))
     speed   = np.concatenate((speed,v))
 
     #parabolic
-    t,s,v,_ = parab(pos[-1], v_seg[-1], 0, T_via[-1]-tb[-1],  T_via[-1]+tb[-1], 0.01)
+    t,s,v,_ = parab(pos[-1], v_seg[-1], 0, T_via[-1]-tb[-1],  T_via[-1]+tb[-1], 0.05)
     time    = np.concatenate((time,t))
     pos     = np.concatenate((pos,s))
     speed   = np.concatenate((speed,v))
@@ -110,8 +110,8 @@ def lspb(via,dur,tb):
     return(v_seg,a_via,T_via,time,pos,speed)
 
 via = np.asarray([10,60,80,10])
-dur = np.asarray([1,1,1])*10.0
-tb = np.asarray([1,1,1,1])*1.0
+dur = np.asarray([1,1,1])*20.0
+tb = np.asarray([1,1,1,1])*2.0
 
 res=lspb(via,dur,tb)
 
