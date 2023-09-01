@@ -107,18 +107,14 @@ class Linear_Interpolation_Cls(object):
         #   t_0 <= t <= t_f
         self.__t = np.arange(t_0, t_f + self.__delta_time, self.__delta_time)
 
-        # Initialization of the output varliables.
-        s = np.zeros(self.__t.size, dtype=np.float32)
-        s_dot = np.ones(self.__t.size, dtype=np.float32)
-
         # Express the position (s), velocity (s_dot), and acceleration (s_ddot) of a linear 
         # trajectory.
         #   Equation (polynomial form):
         #       s(t) = s_0 + v_0 * (t - t_0)
-        s = s_0 + v_0 * (self.__t - t_0)
+        s = np.array(s_0 + v_0 * (self.__t - t_0), dtype=np.float32)
         # Note:
-        #   The velocity is equal to the vector of input velocities.
-        s_dot *= v_0 
+        #   The velocity is equal to the input velocity vector.
+        s_dot = np.ones(self.__t.size, dtype=np.float32) * v_0 
         # Note:
         #   The acceleration is equal to the vector of zeros.
         s_ddot = np.zeros(self.__t.size, dtype=np.float32)
