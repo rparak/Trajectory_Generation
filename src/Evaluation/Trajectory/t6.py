@@ -74,6 +74,7 @@ def lspb(via,dur,tb):
     T_via[-1]=T_via[-2]+dur[-1]
     print(T_via)
 
+    L_Cls = Utilities.Linear_Interpolation_Cls(0.01)
     # ...
     P_Cls = Utilities.Trapezoidal_Profile_Cls(0.01)
     (s, s_dot, s_ddot) = P_Cls.Generate(via[0], via[0] + v_seg[0] * tb[0], 0.0, v_seg[0], T_via[0]-tb[0], T_via[0]+tb[0])

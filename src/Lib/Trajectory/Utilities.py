@@ -88,17 +88,16 @@ class Linear_Interpolation_Cls(object):
                 
         return self.__t.size
     
-    def Generate(self, s_f: float, v_0: float, v_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
-                                                                                               tp.List[float], 
-                                                                                               tp.List[float]]:
+    def Generate(self, s_0: float, v_0: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
+                                                                                   tp.List[float], 
+                                                                                   tp.List[float]]:
         """
         Description:
             A function to generate position, velocity, and acceleration of linear trajectories.
 
         Args:
-            (1) s_f [float]: Final configuration of position constraints.
-            (2, 3) v_0, v_f [float]: Initial and final configuration of velocity constraints.
-            (4, 5) t_0, t_f [float]: Initial and final time constraints.
+            (1, 2) s_0, v_0 [float]: Configuration of position (s) and velocity (v) constraints.
+            (3, 4) t_0, t_f [float]: Initial and final time constraints.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xn]: Position, velocity and acceleration polynomial trajectory of degree 5.
@@ -110,8 +109,20 @@ class Linear_Interpolation_Cls(object):
 
         # Initialization of the output varliables.
         s = np.zeros(self.__t.size, dtype=np.float32)
-        s_dot = s.copy(); s_ddot = s.copy()
-        
+        s_dot = np.ones(self.__t.size, dtype=np.float32)
+
+        # Express the position (s), velocity (s_dot), and acceleration (s_ddot) of a linear 
+        # trajectory.
+        #   Equation (polynomial form):
+        #       s(t) = s_0 + v_0 * (t - t_0)
+        s = s_0 + v_0 * (self.__t - t_0)
+        # Note:
+        #   The velocity is equal to the vector of input velocities.
+        s_dot *= v_0 
+        # Note:
+        #   The acceleration is equal to the vector of zeros.
+        s_ddot = np.zeros(self.__t.size, dtype=np.float32)
+
         return (s, s_dot, s_ddot)
     
 class Polynomial_Profile_Cls(object):
@@ -353,7 +364,7 @@ class Trapezoidal_Profile_Cls(object):
         # Calculate the velocity automatically.
         #   Note:
         #       The velocity must be within the interval, see below:
-        #           (qf - q0) / t_f < v < 2 * ((qf - q0) / t_f)
+        #           (s_f - s_0) / t_f < v < 2 * ((s_f - s_0) / t_f)
         v = 1.5 * ((s_f - s_0) / t_f)
         
         # Time of constant acceleration phase.
