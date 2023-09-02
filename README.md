@@ -23,6 +23,21 @@ An open-source library for generating trajectories using two different methods (
 
 The trajectory profile, which contains position, velocity, and acceleration, is generated from input constraints explained in the individual classes.
 
+A simple program that describes how to work with the library can be found below. The whole program is located in the individual evaluation folder.
+
+```py 
+# System (Default)
+import sys
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    sys.exit(main())
+```
+
 The repository also contains a transformation library with the necessary project-related functions. See link below.
 
 [/rparak/Transformation](https://github.com/rparak/Transformation)
@@ -101,8 +116,6 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
 
 # Multi-Segment Linear Trajectory with Trapezoidal Blends
 
-Note:
-
 It is necessary to change one of the class input parameters to "**Trapezoidal**".
 
 **Position**
@@ -139,8 +152,6 @@ $ ../Evaluation/Trajectory/> python3 test_acceleration.py
 </p>
 
 # Multi-Segment Linear Trajectory with Polynomial Blends
-
-Note:
 
 It is necessary to change one of the class input parameters to "**Polynomial**".
 
