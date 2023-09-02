@@ -88,6 +88,18 @@ class Linear_Function_Cls(object):
                 
         return self.__t.size
     
+    @property
+    def delta_time(self) -> float:
+        """
+        Description:
+           Get the difference (spacing) between the time values.
+        
+        Returns:
+            (1) parameter [float]: The difference (spacing) between the time values.
+        """
+
+        return self.__delta_time
+    
     def Generate(self, s_0: float, v_0: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
                                                                                    tp.List[float], 
                                                                                    tp.List[float]]:
@@ -182,6 +194,18 @@ class Trapezoidal_Profile_Cls(object):
                 
         return self.__t.size
         
+    @property
+    def delta_time(self) -> float:
+        """
+        Description:
+           Get the difference (spacing) between the time values.
+        
+        Returns:
+            (1) parameter [float]: The difference (spacing) between the time values.
+        """
+
+        return self.__delta_time
+    
     def __Method_Null_Intial_Velocities(self, s_0: float, s_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
                                                                                                           tp.List[float], 
                                                                                                           tp.List[float]]:
@@ -397,6 +421,18 @@ class Polynomial_Profile_Cls(object):
         """
                 
         return self.__t.size
+    
+    @property
+    def delta_time(self) -> float:
+        """
+        Description:
+           Get the difference (spacing) between the time values.
+        
+        Returns:
+            (1) parameter [float]: The difference (spacing) between the time values.
+        """
+
+        return self.__delta_time
     
     def __Quintic_Polynomial(self, t_0: float, t_f: float) -> tp.List[tp.List[float]]:
         """

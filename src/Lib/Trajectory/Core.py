@@ -118,6 +118,30 @@ class Multi_Segment_Cls(object):
                 
         return self.__t.size
     
+    @property
+    def delta_time(self) -> float:
+        """
+        Description:
+           Get the difference (spacing) between the time values.
+        
+        Returns:
+            (1) parameter [float]: The difference (spacing) between the time values.
+        """
+
+        return self.__delta_time
+
+    @property
+    def Method(self) -> str:
+        """
+        Description:
+           Get the method of the multi-segment trajectory generation. 
+        
+        Returns:
+            (1) parameter [float]: The method of the multi-segment trajectory generation. 
+        """
+
+        return self.__method
+
     def __Get_Arc_Length(self, s_dot: tp.List[float]) -> float:
         """
         Description:
@@ -175,14 +199,14 @@ class Multi_Segment_Cls(object):
         s = s_tmp; s_dot = s_dot_tmp; s_ddot = s_ddot_tmp
 
         # Phase 2: The trajectory alternates between linear and blend phases.
-        for _, (v_i, v_ii, T_i, T_ii, t_blend_i, t_blend_ii) in enumerate(zip(v, v[1::], T, T[1::], t_blend, t_blend[1::])):
+        for _, (P_ii, v_i, v_ii, T_i, T_ii, t_blend_i, t_blend_ii) in enumerate(zip(P[1::], v, v[1::], T, T[1::], t_blend, t_blend[1::])):
             # Linear phase.
             (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], s[-1] + v_i*((T_ii - t_blend_ii) - (T_i + t_blend_i)), v_i, v_i, T_i + t_blend_i, T_ii - t_blend_ii)
             self.__t = np.concatenate((self.__t, T_Cls.t), dtype=np.float32)
             s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
 
             # Trapezoidal blends phase.
-            (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], P[1] + v_ii * t_blend_ii, v_i, v_ii, T_ii - t_blend_ii, T_ii + t_blend_ii)
+            (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], P_ii + v_ii * t_blend_ii, v_i, v_ii, T_ii - t_blend_ii, T_ii + t_blend_ii)
             self.__t = np.concatenate((self.__t, T_Cls.t), dtype=np.float32)
             s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32) 
 
@@ -195,6 +219,9 @@ class Multi_Segment_Cls(object):
         (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(s[-1], P[-1], v[-1], 0.0, T[-1] - t_blend[-1], T[-1] + t_blend[-1])
         self.__t = np.concatenate((self.__t, T_Cls.t), dtype=np.float32)
         s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
+
+        # Release of the object.
+        del T_Cls
 
         return (s, s_dot, s_ddot)
 
@@ -228,6 +255,36 @@ class Multi_Segment_Cls(object):
         # Initialization of the class to generate trajectory using using a polynomial 
         # profile of degree 5 (quintic).
         P_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(self.__delta_time)
+
+        # Phase 1: The trajectory starts.
+        (s_tmp, s_dot_tmp, s_ddot_tmp) = P_Cls.Generate(P[0], P[0] + v[0] * t_blend[0], 0.0, v[0], 0.0, 0.0, T[0] - t_blend[0], T[0] + t_blend[0])
+        self.__t = P_Cls.t
+        s = s_tmp; s_dot = s_dot_tmp; s_ddot = s_ddot_tmp
+
+        # Phase 2: The trajectory alternates between linear and blend phases.
+        for _, (P_ii, v_i, v_ii, T_i, T_ii, t_blend_i, t_blend_ii) in enumerate(zip(P[1::], v, v[1::], T, T[1::], t_blend, t_blend[1::])):
+            # Linear phase.
+            (s_tmp, s_dot_tmp, s_ddot_tmp) = L_Cls.Generate(s[-1], v_i, T_i + t_blend_i, T_ii - t_blend_ii)
+            self.__t = np.concatenate((self.__t, L_Cls.t), dtype=np.float32)
+            s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
+
+            # Polynomial blends phase.
+            (s_tmp, s_dot_tmp, s_ddot_tmp) = P_Cls.Generate(s[-1], P_ii + v_ii * t_blend_ii, v_i, v_ii, 0.0, 0.0, T_ii - t_blend_ii, T_ii + t_blend_ii)
+            self.__t = np.concatenate((self.__t, P_Cls.t), dtype=np.float32)
+            s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32) 
+
+        # Phase 3: The trajectory ends.
+        #   Linear phase.
+        (s_tmp, s_dot_tmp, s_ddot_tmp) = L_Cls.Generate(s[-1], v[-1], T[-2] + t_blend[-2], T[-1] - t_blend[-1])
+        self.__t = np.concatenate((self.__t, L_Cls.t), dtype=np.float32)
+        s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
+        #   Polynomial blends phase.
+        (s_tmp, s_dot_tmp, s_ddot_tmp) = P_Cls.Generate(s[-1], P[-1], v[-1], 0.0, 0.0, 0.0, T[-1] - t_blend[-1], T[-1] + t_blend[-1])
+        self.__t = np.concatenate((self.__t, P_Cls.t), dtype=np.float32)
+        s = np.concatenate((s, s_tmp), dtype=np.float32); s_dot  = np.concatenate((s_dot, s_dot_tmp), dtype=np.float32); s_ddot = np.concatenate((s_ddot, s_ddot_tmp), dtype=np.float32)
+
+        # Release of the object.
+        del L_Cls; del P_Cls
 
         return (s, s_dot, s_ddot)
 

@@ -12,8 +12,8 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Script:
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
+#   ../Lib/Trajectory/Core
+import Lib.Trajectory.Core
 # Custom Script:
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
@@ -28,25 +28,30 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-       A program to generate multi-axis position trajectories of fifth degree polynomials.
+        A program to generate a multi-segment (acceleration) trajectory using the selected method.
+
+        Possible methods of generating a multi-segment trajectory are as follows:
+            1\ Trapezoidal (parabolic)
+            2\ Polynomial (quintic)
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Profile.py
+            ../Lib/Trajectory/Core.py
     """
     
     # Locate the path to the project folder.
     project_folder = os.getcwd().split('Trajectory_Generation')[0] + 'Trajectory_Generation'
 
-    # Initialization of multi-axis constraints for trajectory generation.
-    Ax_Constraints_0 = [np.array([Mathematics.Degree_To_Radian(10.0), 0.0, 0.0], dtype=np.float32),
-                        np.array([Mathematics.Degree_To_Radian(-10.0), 0.0, 0.0], dtype=np.float32),
-                        np.array([Mathematics.Degree_To_Radian(-45.0), 0.0, 0.0], dtype=np.float32)]
-    Ax_Constraints_f = [np.array([Mathematics.Degree_To_Radian(90.0), 0.0, 0.0], dtype=np.float32),
-                        np.array([Mathematics.Degree_To_Radian(-90.0), 0.0, 0.0], dtype=np.float32),
-                        np.array([Mathematics.Degree_To_Radian(45.0), 0.0, 0.0], dtype=np.float32)]
+    # Initialization of multi-segment constraints for trajectory generation.
+    #  1\ Input control points (waypoints) to be used for trajectory generation.
+    P = np.array([Mathematics.Degree_To_Radian(0.0), Mathematics.Degree_To_Radian(90.0), 
+                  Mathematics.Degree_To_Radian(55.0), Mathematics.Degree_To_Radian(-15.0)], dtype=np.float32)
+    #  2\ Trajectory duration between control points.
+    delta_T = np.array([5.0, 5.0, 5.0], dtype=np.float32)
+    #  3\ Duration of the blend phase.
+    t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
 
-    # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    # Initialization of the class to generate multi-segment trajectory.
+    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -54,22 +59,20 @@ def main():
     # Create a figure.
     _, ax = plt.subplots()
 
-    # Visualization of multi-axis trajectories.
-    for i, (ax_0_i, ax_f_i) in enumerate(zip(Ax_Constraints_0, Ax_Constraints_f)):
-        # Generation of position trajectories from input parameters.
-        (s, _, _) = Polynomial_Cls.Generate(ax_0_i[0], ax_f_i[0], ax_0_i[1], ax_f_i[1], ax_0_i[2], ax_f_i[2], 
-                                            0.0, 1.0)
+    # Generation of position multi-segment trajectories from input parameters.
+    (_, _, s_ddot, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
 
-        ax.plot(Polynomial_Cls.t, s, '.-', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, label=r'$s_{%d}(t)$' % (i + 1))
-
+    # Visualization of relevant structures.
+    ax.plot(MST_Cls.t, s_ddot, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
+            markeredgewidth = 1.5)
+    
     # Set parameters of the graph (plot).
-    ax.set_title(r'Trajectory Polynomial Profile', fontsize=25, pad=25.0)
+    ax.set_title(r'Multi-segment Linear Trajectory with %s Blends' % MST_Cls.Method, fontsize=25, pad=25.0)
     #   Set the x ticks.
-    ax.set_xticks(np.arange(np.min(Polynomial_Cls.t) - 0.1, np.max(Polynomial_Cls.t) + 0.1, 0.1))
+    ax.set_xticks(np.arange(np.min(MST_Cls.t), np.max(MST_Cls.t), 0.5))
     #   Label
     ax.set_xlabel(r't', fontsize=15, labelpad=10)
-    ax.set_ylabel(r's(t)', fontsize=15, labelpad=10) 
+    ax.set_ylabel(r'$\ddot{s}(t)$', fontsize=15, labelpad=10)
     #   Set parameters of the visualization.
     ax.grid(which='major', linewidth = 0.75, linestyle = ':')
     # Get handles and labels for the legend.
@@ -84,7 +87,7 @@ def main():
         plt.get_current_fig_manager().full_screen_toggle()
 
         # Save the results.
-        plt.savefig(f'{project_folder}/images/Polynomial_Profile/position.png', format='png', dpi=300)
+        plt.savefig(f'{project_folder}/images/Trajectory/acceleration_{MST_Cls.Method}.png', format='png', dpi=300)
     else:
         # Show the result.
         plt.show()
