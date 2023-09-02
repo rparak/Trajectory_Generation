@@ -40,6 +40,63 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_position.py
     <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trapezoidal_Profile/position.png width="600" height="350">
 </p>
 
+**Velocity**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trapezoidal_Profile
+$ ../Evaluation/Trapezoidal_Profile/> python3 test_velocity.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trapezoidal_Profile/velocity.png width="600" height="350">
+</p>
+
+**Acceleration**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trapezoidal_Profile
+$ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trapezoidal_Profile/acceleration.png width="600" height="350">
+</p>
+
+## Polynomial Profile (degree 5 - quintic)
+
+**Position**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
+$ ../Evaluation/Trapezoidal_Profile/> python3 test_position.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Polynomial_Profile/position.png width="600" height="350">
+</p>
+
+**Velocity**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
+$ ../Evaluation/Trapezoidal_Profile/> python3 test_velocity.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Polynomial_Profile/velocity.png width="600" height="350">
+</p>
+
+**Acceleration**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
+$ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Polynomial_Profile/acceleration.png width="600" height="350">
+</p>
+
 ## Contact Info
 Roman.Parak@outlook.com
 
