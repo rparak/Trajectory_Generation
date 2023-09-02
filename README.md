@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
 ```bash
 $ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
-$ ../Evaluation/Trapezoidal_Profile/> python3 test_position.py
+$ ../Evaluation/Polynomial_Profile/> python3 test_position.py
 ```
 
 <p align="center">
@@ -167,7 +167,7 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_position.py
 
 ```bash
 $ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
-$ ../Evaluation/Trapezoidal_Profile/> python3 test_velocity.py
+$ ../Evaluation/Polynomial_Profile/> python3 test_velocity.py
 ```
 
 <p align="center">
@@ -178,7 +178,7 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_velocity.py
 
 ```bash
 $ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
-$ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
+$ ../Evaluation/Polynomial_Profile/> python3 test_acceleration.py
 ```
 
 <p align="center">
