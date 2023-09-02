@@ -14,7 +14,6 @@ import matplotlib.pyplot as plt
 # Custom Script:
 #   ../Lib/Trajectory/Core
 import Lib.Trajectory.Core
-# Custom Script:
 #   ../Lib/Transformation/Utilities/Mathematics
 import Lib.Transformation.Utilities.Mathematics as Mathematics
     
