@@ -111,7 +111,7 @@ $ ../Evaluation/Trajectory/> python3 test_position.py
 ```
 
 <p align="center">
-    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/position_Trapeozoidal.png width="600" height="350">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/position_Trapezoidal.png width="600" height="350">
 </p>
 
 **Velocity**
@@ -122,7 +122,7 @@ $ ../Evaluation/Trajectory/> python3 test_velocity.py
 ```
 
 <p align="center">
-    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/velocity_Trapeozoidal.png width="600" height="350">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/velocity_Trapezoidal.png width="600" height="350">
 </p>
 
 **Acceleration**
@@ -133,7 +133,7 @@ $ ../Evaluation/Trajectory/> python3 test_acceleration.py
 ```
 
 <p align="center">
-    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/acceleration_Trapeozoidal.png width="600" height="350">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/acceleration_Trapezoidal.png width="600" height="350">
 </p>
 
 ## Contact Info
