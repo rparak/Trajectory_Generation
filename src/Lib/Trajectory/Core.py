@@ -76,7 +76,7 @@ class Multi_Segment_Cls(object):
 
     def __init__(self, method: str, delta_time: float) -> None:
         try:
-            method in ['Trapezoidal', 'Polynomial']
+            assert method in ['Trapezoidal', 'Polynomial']
 
             # The method of the multi-segment trajectory generation. 
             self.__method = method

@@ -72,7 +72,7 @@ def main():
     ax.plot([MST_Cls.t[-1], T[-1]], [s[-1], P[-1]], '--', color='#d0d0d0', linewidth=1.0)
     
     # Set parameters of the graph (plot).
-    ax.set_title(r'Multi-segment Linear Trajectory with %s Blends' % MST_Cls.Method, fontsize=25, pad=25.0)
+    ax.set_title(r'Multi-Segment Linear Trajectory with %s Blends' % MST_Cls.Method, fontsize=25, pad=25.0)
     #   Set the x ticks.
     ax.set_xticks(np.arange(np.min(MST_Cls.t), np.max(MST_Cls.t), 0.5))
     #   Label

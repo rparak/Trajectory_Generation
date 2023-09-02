@@ -51,7 +51,7 @@ def main():
     t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
 
     # Initialization of the class to generate multi-segment trajectory.
-    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Polynomial', delta_time=0.1)
+    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -67,7 +67,7 @@ def main():
             markeredgewidth = 1.5)
     
     # Set parameters of the graph (plot).
-    ax.set_title(r'Multi-segment Linear Trajectory with %s Blends' % MST_Cls.Method, fontsize=25, pad=25.0)
+    ax.set_title(r'Multi-Segment Linear Trajectory with %s Blends' % MST_Cls.Method, fontsize=25, pad=25.0)
     #   Set the x ticks.
     ax.set_xticks(np.arange(np.min(MST_Cls.t), np.max(MST_Cls.t), 0.5))
     #   Label
