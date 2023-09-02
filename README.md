@@ -62,7 +62,7 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
     <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trapezoidal_Profile/acceleration.png width="600" height="350">
 </p>
 
-## Polynomial Profile (degree 5 - quintic)
+## Polynomial Profile: Degree 5 (quintic)
 
 **Position**
 
@@ -95,6 +95,45 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
 
 <p align="center">
     <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Polynomial_Profile/acceleration.png width="600" height="350">
+</p>
+
+# Multi-Segment Linear Trajectory with Trapezoidal Blends
+
+Note:
+
+It is necessary to change one of the class input parameters to "**Trapezoidal**".
+
+**Position**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ ../Evaluation/Trajectory/> python3 test_position.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/position_Trapeozidal.png width="600" height="350">
+</p>
+
+**Velocity**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ ../Evaluation/Trajectory/> python3 test_velocity.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/velocity_Trapeozidal.png width="600" height="350">
+</p>
+
+**Acceleration**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ ../Evaluation/Trajectory/> python3 test_acceleration.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/acceleration_Trapeozidal.png width="600" height="350">
 </p>
 
 ## Contact Info
