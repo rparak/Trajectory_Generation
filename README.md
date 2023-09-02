@@ -23,21 +23,6 @@ An open-source library for generating trajectories using two different methods (
 
 The trajectory profile, which contains position, velocity, and acceleration, is generated from input constraints explained in the individual classes.
 
-A simple program that describes how to work with the library can be found below. The whole program is located in the individual evaluation folder.
-
-```py 
-# System (Default)
-import sys
-# Numpy (Array computing) [pip3 install numpy]
-import numpy as np
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    sys.exit(main())
-```
-
 The repository also contains a transformation library with the necessary project-related functions. See link below.
 
 [/rparak/Transformation](https://github.com/rparak/Transformation)
@@ -45,6 +30,49 @@ The repository also contains a transformation library with the necessary project
 The library can be used within the Robot Operating System (ROS), Blender, PyBullet, Nvidia Isaac, or any program that allows Python as a programming language.
 
 ## Multi-Axis Trajectory of a Trapezoidal Profile
+
+A simple program that describes how to work with the library can be found below. The whole program is located in the individual evaluation folder.
+
+```py 
+# System (Default)
+import sys
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
+# Custom Script:
+#   ../Lib/Trajectory/Utilities
+import Lib.Trajectory.Utilities
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
+
+def main():
+    """
+    Description:
+        A program to generate multi-axis trapezoidal trajectories.
+
+        Further information can be found in the programme below.
+            ../Lib/Trajectory/Profile.py
+    """
+
+    # Initialization of multi-axis constraints for trajectory generation.
+    Ax_Constraints_0 = [np.array([Mathematics.Degree_To_Radian(10.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-10.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-45.0), 0.0], dtype=np.float32)]
+    Ax_Constraints_f = [np.array([Mathematics.Degree_To_Radian(90.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-90.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(45.0), 0.0], dtype=np.float32)]
+
+    # Initialization of the class to generate trajectory.
+    Trapezoidal_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=0.01)
+
+    # Obtain multi-axis trajectories.
+    for i, (ax_0_i, ax_f_i) in enumerate(zip(Ax_Constraints_0, Ax_Constraints_f)):
+        # Generation of trajectories from input parameters.
+        (s, s_dot, s_ddot) = Trapezoidal_Cls.Generate(ax_0_i[0], ax_f_i[0], ax_0_i[1], ax_f_i[1], 
+                                                      0.0, 1.0)
+
+if __name__ == '__main__':
+    sys.exit(main())
+```
 
 **Position**
 
@@ -81,6 +109,49 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
 
 ## Multi-Axis Trajectory of a Polynomial Profile
 
+A simple program that describes how to work with the library can be found below. The whole program is located in the individual evaluation folder.
+
+```py 
+# System (Default)
+import sys
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
+# Custom Script:
+#   ../Lib/Trajectory/Utilities
+import Lib.Trajectory.Utilities
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
+
+def main():
+    """
+    Description:
+        A program to generate multi-axis polynomial trajectories.
+
+        Further information can be found in the programme below.
+            ../Lib/Trajectory/Profile.py
+    """
+
+    # Initialization of multi-axis constraints for trajectory generation.
+    Ax_Constraints_0 = [np.array([Mathematics.Degree_To_Radian(10.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-10.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-45.0), 0.0], dtype=np.float32)]
+    Ax_Constraints_f = [np.array([Mathematics.Degree_To_Radian(90.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(-90.0), 0.0], dtype=np.float32),
+                        np.array([Mathematics.Degree_To_Radian(45.0), 0.0], dtype=np.float32)]
+
+    # Initialization of the class to generate trajectory.
+    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+
+    # Obtain multi-axis trajectories.
+    for i, (ax_0_i, ax_f_i) in enumerate(zip(Ax_Constraints_0, Ax_Constraints_f)):
+        # Generation trajectories from input parameters.
+        (s, s_dot, s_ddot) = Polynomial_Cls.Generate(ax_0_i[0], ax_f_i[0], ax_0_i[1], ax_f_i[1],
+                                                     0.0, 1.0)
+
+if __name__ == '__main__':
+    sys.exit(main())
+```
+
 **Position**
 
 ```bash
@@ -116,7 +187,50 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
 
 # Multi-Segment Linear Trajectory with Trapezoidal Blends
 
-It is necessary to change one of the class input parameters to "**Trapezoidal**".
+A simple program that describes how to work with the library can be found below. The whole program is located in the individual evaluation folder.
+
+```py 
+# System (Default)
+import sys
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
+# Custom Script:
+#   ../Lib/Trajectory/Core
+import Lib.Trajectory.Core
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
+
+def main():
+    """
+    Description:
+        A program to generate a multi-segment trajectory using the selected method.
+
+        Possible methods of generating a multi-segment trajectory are as follows:
+            1\ Trapezoidal (parabolic)
+            2\ Polynomial (quintic)
+
+        Further information can be found in the programme below.
+            ../Lib/Trajectory/Core.py
+    """
+
+    # Initialization of multi-segment constraints for trajectory generation.
+    #  1\ Input control points (waypoints) to be used for trajectory generation.
+    P = np.array([Mathematics.Degree_To_Radian(0.0), Mathematics.Degree_To_Radian(90.0), 
+                  Mathematics.Degree_To_Radian(55.0), Mathematics.Degree_To_Radian(-15.0)], dtype=np.float32)
+    #  2\ Trajectory duration between control points.
+    delta_T = np.array([5.0, 5.0, 5.0], dtype=np.float32)
+    #  3\ Duration of the blend phase.
+    t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
+
+    # Initialization of the class to generate multi-segment trajectory.
+    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
+
+    # Generation multi-segment trajectories from input parameters.
+    (s, s_dot, s_ddot, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
+
+if __name__ == '__main__':
+    sys.exit(main())
+```
 
 **Position**
 
@@ -153,7 +267,50 @@ $ ../Evaluation/Trajectory/> python3 test_acceleration.py
 
 # Multi-Segment Linear Trajectory with Polynomial Blends
 
-It is necessary to change one of the class input parameters to "**Polynomial**".
+A simple program that describes how to work with the library can be found below. The whole program is located in the individual evaluation folder.
+
+```py 
+# System (Default)
+import sys
+# Numpy (Array computing) [pip3 install numpy]
+import numpy as np
+# Custom Script:
+#   ../Lib/Trajectory/Core
+import Lib.Trajectory.Core
+#   ../Lib/Transformation/Utilities/Mathematics
+import Lib.Transformation.Utilities.Mathematics as Mathematics
+
+def main():
+    """
+    Description:
+        A program to generate a multi-segment trajectory using the selected method.
+
+        Possible methods of generating a multi-segment trajectory are as follows:
+            1\ Trapezoidal (parabolic)
+            2\ Polynomial (quintic)
+
+        Further information can be found in the programme below.
+            ../Lib/Trajectory/Core.py
+    """
+
+    # Initialization of multi-segment constraints for trajectory generation.
+    #  1\ Input control points (waypoints) to be used for trajectory generation.
+    P = np.array([Mathematics.Degree_To_Radian(0.0), Mathematics.Degree_To_Radian(90.0), 
+                  Mathematics.Degree_To_Radian(55.0), Mathematics.Degree_To_Radian(-15.0)], dtype=np.float32)
+    #  2\ Trajectory duration between control points.
+    delta_T = np.array([5.0, 5.0, 5.0], dtype=np.float32)
+    #  3\ Duration of the blend phase.
+    t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
+
+    # Initialization of the class to generate multi-segment trajectory.
+    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Polynomial', delta_time=0.1)
+
+    # Generation multi-segment trajectories from input parameters.
+    (s, s_dot, s_ddot, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
+
+if __name__ == '__main__':
+    sys.exit(main())
+```
 
 **Position**
 
