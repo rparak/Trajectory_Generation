@@ -27,6 +27,19 @@ The repository also contains a transformation library with the necessary project
 
 The library can be used within the Robot Operating System (ROS), Blender, PyBullet, Nvidia Isaac, or any program that allows Python as a programming language.
 
+## Trapezoidal Profile
+
+**Position**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trapezoidal_Profile
+$ ../Evaluation/Trapezoidal_Profile/> python3 test_position.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trapezoidal_Profile/position.png width="600" height="350">
+</p>
+
 ## Contact Info
 Roman.Parak@outlook.com
 
