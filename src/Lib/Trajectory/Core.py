@@ -145,7 +145,7 @@ class Multi_Segment_Cls(object):
     def __Get_Arc_Length(self, s_dot: tp.List[float]) -> float:
         """
         Description:
-            Obtain the arc length L(t) of the general parametric curve.
+            Obtain the arc length L(t) of the position part of the trajectory.
 
             The arc length L(t) is defined by:
                 L(t) = \int_{0}^{t} ||s'(t)||_{2} dt.
@@ -156,7 +156,7 @@ class Multi_Segment_Cls(object):
                                                         Where N is the number of time points of the trajectory.
 
         Returns:
-            (1) parameter [float]: The arc length L(t) of the general parametric curve.
+            (1) parameter [float]: The arc length L(t) of the position part of the trajectory.
         """
                 
         L = 0.0
@@ -310,8 +310,8 @@ class Multi_Segment_Cls(object):
             (4) parameter [Vector<float> 1xn]: The time of each trajectory segment.
                                                 Note:
                                                     when the trajectory reaches the control points
-            (5) parameter [float]: The arc length L(t) of the general parametric curve.
-
+            (5) parameter [float]: The arc length L(t) of the position part of the trajectory.
+            
         Note:
             The variable n equals the number of points.
         """
