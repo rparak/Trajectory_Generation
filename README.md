@@ -136,6 +136,45 @@ $ ../Evaluation/Trajectory/> python3 test_acceleration.py
     <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/acceleration_Trapezoidal.png width="600" height="350">
 </p>
 
+# Multi-Segment Linear Trajectory with Polynomial Blends
+
+Note:
+
+It is necessary to change one of the class input parameters to "**Polynomial**".
+
+**Position**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ ../Evaluation/Trajectory/> python3 test_position.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/position_Polynomial.png width="600" height="350">
+</p>
+
+**Velocity**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ ../Evaluation/Trajectory/> python3 test_velocity.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/velocity_Polynomial.png width="600" height="350">
+</p>
+
+**Acceleration**
+
+```bash
+$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ ../Evaluation/Trajectory/> python3 test_acceleration.py
+```
+
+<p align="center">
+    <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trajectory/acceleration_Polynomial.png width="600" height="350">
+</p>
+
 ## Contact Info
 Roman.Parak@outlook.com
 
