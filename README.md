@@ -27,7 +27,7 @@ The repository also contains a transformation library with the necessary project
 
 The library can be used within the Robot Operating System (ROS), Blender, PyBullet, Nvidia Isaac, or any program that allows Python as a programming language.
 
-## Trapezoidal Profile
+## Multi-Axis Trajectory of a Trapezoidal Profile
 
 **Position**
 
@@ -62,7 +62,7 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
     <img src=https://github.com/rparak/Trajectory_Generation/blob/main/images/Trapezoidal_Profile/acceleration.png width="600" height="350">
 </p>
 
-## Polynomial Profile: Degree 5 (quintic)
+## Multi-Axis Trajectory of a Polynomial Profile
 
 **Position**
 
