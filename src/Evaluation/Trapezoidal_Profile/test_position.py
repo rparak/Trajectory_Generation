@@ -64,7 +64,7 @@ def main():
                 markeredgewidth = 1.5, label=r'$s_{%d}(t)$' % (i + 1))
 
     # Set parameters of the graph (plot).
-    ax.set_title(r'Trajectory Trapezoidal Profile', fontsize=25, pad=25.0)
+    ax.set_title(r'Multi-Axis Trajectory of a Trapezoidal Profile', fontsize=25, pad=25.0)
     #   Set the x ticks.
     ax.set_xticks(np.arange(np.min(Trapezoidal_Cls.t) - 0.1, np.max(Trapezoidal_Cls.t) + 0.1, 0.1))
     #   Label

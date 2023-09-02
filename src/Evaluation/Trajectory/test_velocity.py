@@ -62,6 +62,7 @@ def main():
     # Generation of position multi-segment trajectories from input parameters.
     (_, s_dot, _, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
 
+    print(s_dot[-1])
     # Visualization of relevant structures.
     ax.plot(MST_Cls.t, s_dot, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
             markeredgewidth = 1.5)

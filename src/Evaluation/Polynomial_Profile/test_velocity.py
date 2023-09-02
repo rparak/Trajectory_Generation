@@ -64,7 +64,7 @@ def main():
                 markeredgewidth = 1.5, label=r'$\dot{s}_{%d}(t)$' % (i + 1))
 
     # Set parameters of the graph (plot).
-    ax.set_title(r'Trajectory Polynomial Profile', fontsize=25, pad=25.0)
+    ax.set_title(r'Multi-Axis Trajectory of a Polynomial Profile', fontsize=25, pad=25.0)
     #   Set the x ticks.
     ax.set_xticks(np.arange(np.min(Polynomial_Cls.t) - 0.1, np.max(Polynomial_Cls.t) + 0.1, 0.1))
     #   Label

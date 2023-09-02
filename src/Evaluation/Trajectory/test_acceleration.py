@@ -51,7 +51,7 @@ def main():
     t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
 
     # Initialization of the class to generate multi-segment trajectory.
-    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
+    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Polynomial', delta_time=0.1)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
