@@ -43,11 +43,11 @@ def main():
     # Initialization of multi-segment constraints for trajectory generation.
     #  1\ Input control points (waypoints) to be used for trajectory generation.
     P = np.array([Mathematics.Degree_To_Radian(0.0), Mathematics.Degree_To_Radian(90.0), 
-                  Mathematics.Degree_To_Radian(55.0), Mathematics.Degree_To_Radian(-15.0)], dtype=np.float32)
+                  Mathematics.Degree_To_Radian(55.0), Mathematics.Degree_To_Radian(-15.0)], dtype=np.float64)
     #  2\ Trajectory duration between control points.
-    delta_T = np.array([5.0, 5.0, 5.0], dtype=np.float32)
+    delta_T = np.array([5.0, 5.0, 5.0], dtype=np.float64)
     #  3\ Duration of the blend phase.
-    t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
+    t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float64)
 
     # Initialization of the class to generate multi-segment trajectory.
     MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)

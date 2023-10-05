@@ -125,13 +125,13 @@ class Linear_Function_Cls(object):
         # trajectory.
         #   Equation (polynomial form):
         #       s(t) = s_0 + v_0 * (t - t_0)
-        s = np.array(s_0 + v_0 * (self.__t - t_0), dtype=np.float32)
+        s = np.array(s_0 + v_0 * (self.__t - t_0), dtype=np.float64)
         # Note:
         #   The velocity is equal to the input velocity vector.
-        s_dot = np.ones(self.__t.size, dtype=np.float32) * v_0 
+        s_dot = np.ones(self.__t.size, dtype=np.float64) * v_0 
         # Note:
         #   The acceleration is equal to the vector of zeros.
-        s_ddot = np.zeros(self.__t.size, dtype=np.float32)
+        s_ddot = np.zeros(self.__t.size, dtype=np.float64)
 
         return (s, s_dot, s_ddot)
     
@@ -237,7 +237,7 @@ class Trapezoidal_Profile_Cls(object):
             t_f = self.__t[-1]
 
         # Initialization of the output varliables.
-        s = np.zeros(self.N, dtype=np.float32)
+        s = np.zeros(self.N, dtype=np.float64)
         s_dot = s.copy(); s_ddot = s.copy()
 
         # Calculate the velocity automatically.
@@ -301,7 +301,7 @@ class Trapezoidal_Profile_Cls(object):
         self.__t = np.arange(t_0, t_f + self.__delta_time, self.__delta_time)
 
         # Initialization of the output varliables.
-        s = np.zeros(self.N, dtype=np.float32)
+        s = np.zeros(self.N, dtype=np.float64)
         s_dot = s.copy(); s_ddot = s.copy()
 
         # Express the velocity with a simple formula.
@@ -464,7 +464,7 @@ class Polynomial_Profile_Cls(object):
                          [0.0, 0.0,       2.0,    6.0 * t_0, 12.0 * t_0**2, 20.0 * t_0**3],
                          [1.0, t_f,    t_f**2,       t_f**3,        t_f**4,        t_f**5],
                          [0.0, 1.0, 2.0 * t_f, 3.0 * t_f**2,  4.0 * t_f**3,  5.0 * t_f**4],
-                         [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]], dtype=np.float32)
+                         [0.0, 0.0,       2.0,    6.0 * t_f, 12.0 * t_f**2, 20.0 * t_f**3]], dtype=np.float64)
  
     def Generate(self, s_0: float, s_f: float, v_0: float, v_f: float, a_0: float, a_f: float, t_0: float, t_f: float) -> tp.Tuple[tp.List[float], 
                                                                                                                                    tp.List[float], 
@@ -493,7 +493,7 @@ class Polynomial_Profile_Cls(object):
         self.__X = self.__Quintic_Polynomial(t_0, t_f)
 
         # Initialization of the output varliables.
-        s = np.zeros(self.__t.size, dtype=np.float32)
+        s = np.zeros(self.__t.size, dtype=np.float64)
         s_dot = s.copy(); s_ddot = s.copy()
 
         # Find the coefficients c_{0 .. 5} from the equation below.
@@ -508,13 +508,13 @@ class Polynomial_Profile_Cls(object):
         
         # Analytic expression (velocity):
         #   s_dot(t) = c_{1} + 2*c_{2}*t + 3*c_{3}*t^2 + 4*c_{4}*t^3 + 5*c_{5}*t^4
-        for i, (C_ii, var_i) in enumerate(zip(C[1:], np.array([1.0, 2.0, 3.0, 4.0, 5.0], dtype=np.float32)), 
+        for i, (C_ii, var_i) in enumerate(zip(C[1:], np.array([1.0, 2.0, 3.0, 4.0, 5.0], dtype=np.float64)), 
                                              start=1):
             s_dot[:] += (self.__t ** (i - 1)) * C_ii * var_i
 
         # Analytic expression (acceleration):
         #   s_ddot(t) = 2*c_{2}*t + 6*c_{3}*t^2 + 12*c_{4}*t^3 + 20*c_{5}*t^4
-        for i, (C_iii, var_i) in enumerate(zip(C[2:], np.array([2.0, 6.0, 12.0, 20.0], dtype=np.float32)), 
+        for i, (C_iii, var_i) in enumerate(zip(C[2:], np.array([2.0, 6.0, 12.0, 20.0], dtype=np.float64)), 
                                               start=2):
             s_ddot[:] += (self.__t ** (i - 2)) * C_iii * var_i
 
