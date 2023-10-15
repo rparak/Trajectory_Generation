@@ -29,7 +29,7 @@ File Name: Core.py
 import numpy as np
 # Typing (Support for type hints)
 import typing as tp
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Trajectory/Utilities
 import Lib.Trajectory.Utilities
 #   ../Lib/Transformation/Utilities/Mathematics
