@@ -11,7 +11,7 @@ import os
 import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
-# Custom Script:
+# Custom Lib.:
 #   ../Lib/Trajectory/Core
 import Lib.Trajectory.Core
 #   ../Lib/Transformation/Utilities/Mathematics
