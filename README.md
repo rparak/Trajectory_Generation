@@ -350,7 +350,7 @@ Roman.Parak@outlook.com
 
 ## Citation (BibTex)
 ```bash
-@misc{RomanParak_DataConverter,
+@misc{RomanParak_TrajectoryGeneration,
   author = {Roman Parak},
   title = {An open-source trajectory generation library useful for robotics applications},
   year = {2023},
