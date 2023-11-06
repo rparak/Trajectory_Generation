@@ -340,7 +340,6 @@ def Combinations(n: int, r: int):
 
     return int(Factorial(n) / (Factorial(r) * Factorial(n - r)))
 
-
 def Perpendicular_Distance(A: tp.List[float], B: tp.List[float], C: tp.List[float]) -> float:
     """
     Description:
