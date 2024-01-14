@@ -39,10 +39,10 @@ import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Custom Script:
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Utilities
+import Trajectory.Utilities
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
 
 def main():
     """
@@ -50,7 +50,7 @@ def main():
         A program to generate multi-axis trapezoidal trajectories.
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Profile.py
+            ../Trajectory/Profile.py
     """
 
     # Initialization of multi-axis constraints for trajectory generation.
@@ -62,7 +62,7 @@ def main():
                         np.array([Mathematics.Degree_To_Radian(45.0), 0.0], dtype=np.float32)]
 
     # Initialization of the class to generate trajectory.
-    Trapezoidal_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=0.01)
+    Trapezoidal_Cls = Trajectory.Utilities.Trapezoidal_Profile_Cls(delta_time=0.01)
 
     # Obtain multi-axis trajectories.
     for i, (ax_0_i, ax_f_i) in enumerate(zip(Ax_Constraints_0, Ax_Constraints_f)):
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 **Position**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trapezoidal_Profile
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trapezoidal_Profile
 $ ../Evaluation/Trapezoidal_Profile/> python3 test_position.py
 ```
 
@@ -88,7 +88,7 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_position.py
 **Velocity**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trapezoidal_Profile
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trapezoidal_Profile
 $ ../Evaluation/Trapezoidal_Profile/> python3 test_velocity.py
 ```
 
@@ -99,7 +99,7 @@ $ ../Evaluation/Trapezoidal_Profile/> python3 test_velocity.py
 **Acceleration**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trapezoidal_Profile
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trapezoidal_Profile
 $ ../Evaluation/Trapezoidal_Profile/> python3 test_acceleration.py
 ```
 
@@ -117,10 +117,10 @@ import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Custom Script:
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Utilities
+import Trajectory.Utilities
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
 
 def main():
     """
@@ -128,7 +128,7 @@ def main():
         A program to generate multi-axis polynomial trajectories.
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Profile.py
+            ../Trajectory/Profile.py
     """
 
     # Initialization of multi-axis constraints for trajectory generation.
@@ -140,7 +140,7 @@ def main():
                         np.array([Mathematics.Degree_To_Radian(45.0), 0.0], dtype=np.float32)]
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    Polynomial_Cls = Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
 
     # Obtain multi-axis trajectories.
     for i, (ax_0_i, ax_f_i) in enumerate(zip(Ax_Constraints_0, Ax_Constraints_f)):
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 **Position**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Polynomial_Profile
 $ ../Evaluation/Polynomial_Profile/> python3 test_position.py
 ```
 
@@ -166,7 +166,7 @@ $ ../Evaluation/Polynomial_Profile/> python3 test_position.py
 **Velocity**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Polynomial_Profile
 $ ../Evaluation/Polynomial_Profile/> python3 test_velocity.py
 ```
 
@@ -177,7 +177,7 @@ $ ../Evaluation/Polynomial_Profile/> python3 test_velocity.py
 **Acceleration**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Polynomial_Profile
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Polynomial_Profile
 $ ../Evaluation/Polynomial_Profile/> python3 test_acceleration.py
 ```
 
@@ -195,10 +195,10 @@ import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Custom Script:
-#   ../Lib/Trajectory/Core
-import Lib.Trajectory.Core
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Core
+import Trajectory.Core
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
 
 def main():
     """
@@ -210,7 +210,7 @@ def main():
             2\ Polynomial (quintic)
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Core.py
+            ../Trajectory/Core.py
     """
 
     # Initialization of multi-segment constraints for trajectory generation.
@@ -223,7 +223,7 @@ def main():
     t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
 
     # Initialization of the class to generate multi-segment trajectory.
-    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
+    MST_Cls = Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
 
     # Generation multi-segment trajectories from input parameters.
     (s, s_dot, s_ddot, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
@@ -235,7 +235,7 @@ if __name__ == '__main__':
 **Position**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trajectory
 $ ../Evaluation/Trajectory/> python3 test_position.py
 ```
 
@@ -246,7 +246,7 @@ $ ../Evaluation/Trajectory/> python3 test_position.py
 **Velocity**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trajectory
 $ ../Evaluation/Trajectory/> python3 test_velocity.py
 ```
 
@@ -257,7 +257,7 @@ $ ../Evaluation/Trajectory/> python3 test_velocity.py
 **Acceleration**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trajectory
 $ ../Evaluation/Trajectory/> python3 test_acceleration.py
 ```
 
@@ -275,10 +275,10 @@ import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # Custom Script:
-#   ../Lib/Trajectory/Core
-import Lib.Trajectory.Core
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Core
+import Trajectory.Core
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
 
 def main():
     """
@@ -290,7 +290,7 @@ def main():
             2\ Polynomial (quintic)
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Core.py
+            ../Trajectory/Core.py
     """
 
     # Initialization of multi-segment constraints for trajectory generation.
@@ -303,7 +303,7 @@ def main():
     t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float32)
 
     # Initialization of the class to generate multi-segment trajectory.
-    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Polynomial', delta_time=0.1)
+    MST_Cls = Trajectory.Core.Multi_Segment_Cls('Polynomial', delta_time=0.1)
 
     # Generation multi-segment trajectories from input parameters.
     (s, s_dot, s_ddot, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
@@ -315,7 +315,7 @@ if __name__ == '__main__':
 **Position**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trajectory
 $ ../Evaluation/Trajectory/> python3 test_position.py
 ```
 
@@ -326,7 +326,7 @@ $ ../Evaluation/Trajectory/> python3 test_position.py
 **Velocity**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trajectory
 $ ../Evaluation/Trajectory/> python3 test_velocity.py
 ```
 
@@ -337,7 +337,7 @@ $ ../Evaluation/Trajectory/> python3 test_velocity.py
 **Acceleration**
 
 ```bash
-$ /> cd Documents/GitHub/Trajectory_Generation/src/Evaluation/Trajectory
+$ /> cd Documents/GitHub/Trajectory_Generation/Evaluation/Trajectory
 $ ../Evaluation/Trajectory/> python3 test_acceleration.py
 ```
 
