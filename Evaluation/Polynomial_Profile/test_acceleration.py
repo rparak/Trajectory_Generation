@@ -1,8 +1,8 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../' + 'src' not in sys.path:
-    sys.path.append('../..')
+if '../../' + 'src' not in sys.path:
+    sys.path.append('../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # OS (Operating system interfaces)
@@ -12,10 +12,10 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Lib.:
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Utilities
+import Trajectory.Utilities
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
     
 """
 Description:
@@ -30,7 +30,7 @@ def main():
         A program to generate multi-axis acceleration trajectories of fifth degree polynomials.
         
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Profile.py
+            ../Trajectory/Profile.py
     """
     
     # Locate the path to the project folder.
@@ -45,7 +45,7 @@ def main():
                         np.array([Mathematics.Degree_To_Radian(45.0), 0.0, 0.0], dtype=np.float64)]
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    Polynomial_Cls = Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])

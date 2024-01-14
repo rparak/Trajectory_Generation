@@ -1,8 +1,8 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../' + 'src' not in sys.path:
-    sys.path.append('../..')
+if '../../' + 'src' not in sys.path:
+    sys.path.append('../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # OS (Operating system interfaces)
@@ -12,10 +12,10 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Lib.:
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Utilities
+import Trajectory.Utilities
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
     
 """
 Description:
@@ -27,10 +27,10 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        A program to generate multi-axis velocity trajectories of fifth degree polynomials.
+       A program to generate multi-axis position trajectories of fifth degree polynomials.
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Profile.py
+            ../Trajectory/Profile.py
     """
     
     # Locate the path to the project folder.
@@ -45,7 +45,7 @@ def main():
                         np.array([Mathematics.Degree_To_Radian(45.0), 0.0, 0.0], dtype=np.float64)]
 
     # Initialization of the class to generate trajectory.
-    Polynomial_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
+    Polynomial_Cls = Trajectory.Utilities.Polynomial_Profile_Cls(delta_time=0.01)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -55,12 +55,12 @@ def main():
 
     # Visualization of multi-axis trajectories.
     for i, (ax_0_i, ax_f_i) in enumerate(zip(Ax_Constraints_0, Ax_Constraints_f)):
-        # Generation of velocity trajectories from input parameters.
-        (_, s_dot, _) = Polynomial_Cls.Generate(ax_0_i[0], ax_f_i[0], ax_0_i[1], ax_f_i[1], ax_0_i[2], ax_f_i[2], 
-                                                0.0, 1.0)
+        # Generation of position trajectories from input parameters.
+        (s, _, _) = Polynomial_Cls.Generate(ax_0_i[0], ax_f_i[0], ax_0_i[1], ax_f_i[1], ax_0_i[2], ax_f_i[2], 
+                                            0.0, 1.0)
 
-        ax.plot(Polynomial_Cls.t, s_dot, '.-', linewidth=1.0, markersize = 3.0, 
-                markeredgewidth = 1.5, label=r'$\dot{s}_{%d}(t)$' % (i + 1))
+        ax.plot(Polynomial_Cls.t, s, '.-', linewidth=1.0, markersize = 3.0, 
+                markeredgewidth = 1.5, label=r'$s_{%d}(t)$' % (i + 1))
 
     # Set parameters of the graph (plot).
     ax.set_title(r'Multi-Axis Trajectory of a Polynomial Profile', fontsize=25, pad=25.0)
@@ -68,7 +68,7 @@ def main():
     ax.set_xticks(np.arange(np.min(Polynomial_Cls.t) - 0.1, np.max(Polynomial_Cls.t) + 0.1, 0.1))
     #   Label
     ax.set_xlabel(r't', fontsize=15, labelpad=10)
-    ax.set_ylabel(r'$\dot{s}(t)$', fontsize=15, labelpad=10) 
+    ax.set_ylabel(r's(t)', fontsize=15, labelpad=10) 
     #   Set parameters of the visualization.
     ax.grid(which='major', linewidth = 0.75, linestyle = ':')
     # Get handles and labels for the legend.
@@ -83,11 +83,10 @@ def main():
         plt.get_current_fig_manager().full_screen_toggle()
 
         # Save the results.
-        plt.savefig(f'{project_folder}/images/Polynomial_Profile/velocity.png', format='png', dpi=300)
+        plt.savefig(f'{project_folder}/images/Polynomial_Profile/position.png', format='png', dpi=300)
     else:
         # Show the result.
         plt.show()
-
 
 if __name__ == "__main__":
     sys.exit(main())

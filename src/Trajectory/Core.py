@@ -30,10 +30,10 @@ import numpy as np
 # Typing (Support for type hints)
 import typing as tp
 # Custom Lib.:
-#   ../Lib/Trajectory/Utilities
-import Lib.Trajectory.Utilities
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Utilities
+import Trajectory.Utilities
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
 
 """
 Description:
@@ -191,7 +191,7 @@ class Multi_Segment_Cls(object):
                 
         # Initialization of the class to generate trajectory using using a trapezoidal 
         # profile.
-        T_Cls = Lib.Trajectory.Utilities.Trapezoidal_Profile_Cls(self.__delta_time)
+        T_Cls = Trajectory.Utilities.Trapezoidal_Profile_Cls(self.__delta_time)
 
         # Phase 1: The trajectory starts.
         (s_tmp, s_dot_tmp, s_ddot_tmp) = T_Cls.Generate(P[0], P[0] + v[0] * t_blend[0], 0.0, v[0], T[0] - t_blend[0], T[0] + t_blend[0])
@@ -250,11 +250,11 @@ class Multi_Segment_Cls(object):
         """
                 
         # Initialization of the class to generate trajectory using a linear function.
-        L_Cls = Lib.Trajectory.Utilities.Linear_Function_Cls(self.__delta_time)
+        L_Cls = Trajectory.Utilities.Linear_Function_Cls(self.__delta_time)
 
         # Initialization of the class to generate trajectory using using a polynomial 
         # profile of degree 5 (quintic).
-        P_Cls = Lib.Trajectory.Utilities.Polynomial_Profile_Cls(self.__delta_time)
+        P_Cls = Trajectory.Utilities.Polynomial_Profile_Cls(self.__delta_time)
 
         # Phase 1: The trajectory starts.
         (s_tmp, s_dot_tmp, s_ddot_tmp) = P_Cls.Generate(P[0], P[0] + v[0] * t_blend[0], 0.0, v[0], 0.0, 0.0, T[0] - t_blend[0], T[0] + t_blend[0])

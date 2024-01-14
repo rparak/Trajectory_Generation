@@ -1,8 +1,8 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../' + 'src' not in sys.path:
-    sys.path.append('../..')
+if '../../' + 'src' not in sys.path:
+    sys.path.append('../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # OS (Operating system interfaces)
@@ -12,10 +12,10 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Lib.:
-#   ../Lib/Trajectory/Core
-import Lib.Trajectory.Core
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Core
+import Trajectory.Core
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
     
 """
 Description:
@@ -34,7 +34,7 @@ def main():
             2\ Polynomial (quintic)
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Core.py
+            ../Trajectory/Core.py
     """
     
     # Locate the path to the project folder.
@@ -50,7 +50,7 @@ def main():
     t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float64)
 
     # Initialization of the class to generate multi-segment trajectory.
-    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
+    MST_Cls = Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])

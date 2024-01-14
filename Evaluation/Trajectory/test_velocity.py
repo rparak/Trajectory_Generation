@@ -1,8 +1,8 @@
 # System (Default)
 import sys
 #   Add access if it is not in the system path.
-if '../' + 'src' not in sys.path:
-    sys.path.append('../..')
+if '../../' + 'src' not in sys.path:
+    sys.path.append('../../' + 'src')
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
 # OS (Operating system interfaces)
@@ -12,10 +12,10 @@ import scienceplots
 # Matplotlib (Visualization) [pip3 install matplotlib]
 import matplotlib.pyplot as plt
 # Custom Lib.:
-#   ../Lib/Trajectory/Core
-import Lib.Trajectory.Core
-#   ../Lib/Transformation/Utilities/Mathematics
-import Lib.Transformation.Utilities.Mathematics as Mathematics
+#   ../Trajectory/Core
+import Trajectory.Core
+#   ../Transformation/Utilities/Mathematics
+import Transformation.Utilities.Mathematics as Mathematics
     
 """
 Description:
@@ -27,14 +27,14 @@ CONST_SAVE_DATA = False
 def main():
     """
     Description:
-        A program to generate a multi-segment (position) trajectory using the selected method.
+        A program to generate a multi-segment (velocity) trajectory using the selected method.
 
         Possible methods of generating a multi-segment trajectory are as follows:
             1\ Trapezoidal (parabolic)
             2\ Polynomial (quintic)
 
         Further information can be found in the programme below.
-            ../Lib/Trajectory/Core.py
+            ../Trajectory/Core.py
     """
     
     # Locate the path to the project folder.
@@ -50,7 +50,7 @@ def main():
     t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float64)
 
     # Initialization of the class to generate multi-segment trajectory.
-    MST_Cls = Lib.Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
+    MST_Cls = Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -59,16 +59,12 @@ def main():
     _, ax = plt.subplots()
 
     # Generation of position multi-segment trajectories from input parameters.
-    (s, _, _, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
+    (_, s_dot, _, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
 
+    print(s_dot[-1])
     # Visualization of relevant structures.
-    ax.plot(T, P, 'o--', color='#d0d0d0', linewidth=1.0, markersize = 8.0, 
-            markeredgewidth = 4.0, markerfacecolor = '#ffffff', label='Control Points')
-    ax.plot(MST_Cls.t, s, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
-            markeredgewidth = 1.5, label='Trajectory (f = %d, L = %1.2f)' % (1.0/MST_Cls.delta_time, L))
-    # Additional lines.
-    ax.plot([MST_Cls.t[0], T[0]], [s[0], P[0]], '--', color='#d0d0d0', linewidth=1.0)
-    ax.plot([MST_Cls.t[-1], T[-1]], [s[-1], P[-1]], '--', color='#d0d0d0', linewidth=1.0)
+    ax.plot(MST_Cls.t, s_dot, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
+            markeredgewidth = 1.5)
     
     # Set parameters of the graph (plot).
     ax.set_title(r'Multi-Segment Linear Trajectory with %s Blends' % MST_Cls.Method, fontsize=25, pad=25.0)
@@ -76,7 +72,7 @@ def main():
     ax.set_xticks(np.arange(np.min(MST_Cls.t), np.max(MST_Cls.t), 0.5))
     #   Label
     ax.set_xlabel(r't', fontsize=15, labelpad=10)
-    ax.set_ylabel(r's(t)', fontsize=15, labelpad=10) 
+    ax.set_ylabel(r'$\dot{s}(t)$', fontsize=15, labelpad=10) 
     #   Set parameters of the visualization.
     ax.grid(which='major', linewidth = 0.75, linestyle = ':')
     # Get handles and labels for the legend.
@@ -91,7 +87,7 @@ def main():
         plt.get_current_fig_manager().full_screen_toggle()
 
         # Save the results.
-        plt.savefig(f'{project_folder}/images/Trajectory/position_{MST_Cls.Method}.png', format='png', dpi=300)
+        plt.savefig(f'{project_folder}/images/Trajectory/velocity_{MST_Cls.Method}.png', format='png', dpi=300)
     else:
         # Show the result.
         plt.show()
