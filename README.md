@@ -38,7 +38,7 @@ A simple program that describes how to work with the library can be found below.
 import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Trajectory/Utilities
 import Trajectory.Utilities
 #   ../Transformation/Utilities/Mathematics
@@ -116,7 +116,7 @@ A simple program that describes how to work with the library can be found below.
 import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Trajectory/Utilities
 import Trajectory.Utilities
 #   ../Transformation/Utilities/Mathematics
@@ -194,7 +194,7 @@ A simple program that describes how to work with the library can be found below.
 import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Trajectory/Core
 import Trajectory.Core
 #   ../Transformation/Utilities/Mathematics
@@ -274,7 +274,7 @@ A simple program that describes how to work with the library can be found below.
 import sys
 # Numpy (Array computing) [pip3 install numpy]
 import numpy as np
-# Custom Script:
+# Custom Lib.:
 #   ../Trajectory/Core
 import Trajectory.Core
 #   ../Transformation/Utilities/Mathematics
