@@ -177,8 +177,8 @@ class Multi_Segment_Cls(object):
         Args:
             (1) P [Vector<float> 1xn]: Input control points (waypoints) to be used for trajectory generation.
             (2) t_blend [Vector<float> 1xn]: Duration of the blend phase.
-            (3) T [Vector<float> 1xn]: The velocity of each trajectory segment.
-            (4) v [Vector<float> 1x(n-1)]: The time of each trajectory segment.
+            (3) T [Vector<float> 1xn]: The time of each trajectory segment.
+            (4) v [Vector<float> 1x(n-1)]: The velocity of each trajectory segment.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xN]: Position, velocity and acceleration trapezoidal trajectory.
@@ -237,8 +237,8 @@ class Multi_Segment_Cls(object):
         Args:
             (1) P [Vector<float> 1xn]: Input control points (waypoints) to be used for trajectory generation.
             (2) t_blend [Vector<float> 1xn]: Duration of the blend phase.
-            (3) T [Vector<float> 1xn]: The velocity of each trajectory segment.
-            (4) v [Vector<float> 1x(n-1)]: The time of each trajectory segment.
+            (3) T [Vector<float> 1xn]: The time of each trajectory segment.
+            (4) v [Vector<float> 1x(n-1)]: The velocity of each trajectory segment.
 
         Returns:
             (1 - 3) parameter [Vector<float> 1xN]: Position, velocity and acceleration trapezoidal trajectory.
