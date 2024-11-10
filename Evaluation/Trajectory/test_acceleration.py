@@ -30,8 +30,7 @@ def main():
         A program to generate a multi-segment (acceleration) trajectory using the selected method.
 
         Possible methods of generating a multi-segment trajectory are as follows:
-            1\ Trapezoidal (parabolic)
-            2\ Polynomial (quintic)
+            1\ Polynomial (quintic)
 
         Further information can be found in the programme below.
             ../Trajectory/Core.py
@@ -50,7 +49,7 @@ def main():
     t_blend = np.array([1.0, 1.0, 1.0, 1.0], dtype=np.float64)
 
     # Initialization of the class to generate multi-segment trajectory.
-    MST_Cls = Trajectory.Core.Multi_Segment_Cls('Trapezoidal', delta_time=0.1)
+    MST_Cls = Trajectory.Core.Multi_Segment_Cls('Polynomial', delta_time=0.01)
     
     # Set the parameters for the scientific style.
     plt.style.use(['science'])
@@ -62,13 +61,13 @@ def main():
     (_, _, s_ddot, T, L) = MST_Cls.Generate(P, delta_T, t_blend)
 
     # Visualization of relevant structures.
-    ax.plot(MST_Cls.t, s_ddot, '.-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
+    ax.plot(MST_Cls.t, s_ddot, '-', color='#ffbf80', linewidth=1.0, markersize = 3.0, 
             markeredgewidth = 1.5)
     
     # Set parameters of the graph (plot).
     ax.set_title(r'Multi-Segment Linear Trajectory with %s Blends' % MST_Cls.Method, fontsize=25, pad=25.0)
     #   Set the x ticks.
-    ax.set_xticks(np.arange(np.min(MST_Cls.t), np.max(MST_Cls.t), 0.5))
+    ax.set_xticks(np.arange(np.min(MST_Cls.t)-1.0, np.max(MST_Cls.t)+1.0, 0.5))
     #   Label
     ax.set_xlabel(r't', fontsize=15, labelpad=10)
     ax.set_ylabel(r'$\ddot{s}(t)$', fontsize=15, labelpad=10)
