@@ -19,7 +19,9 @@ Windows, Linux, macOS
 ```
 
 ## Project Description
-An open-source library for generating trajectories using two different methods (trapezoidal, polynomial). The library provides access to various classes for working with multi-axis (Trapezoidal_Profile_Cls, Polynomial_Profile_Cls) trajectories as well as multi-segment (Multi_Segment_Cls) trajectories.
+An open-source library for generating trajectories using two different methods (trapezoidal, polynomial). The library provides access to various classes for working with multi-axis (Trapezoidal_Profile_Cls, Polynomial_Profile_Cls) trajectories.
+
+The library also provides access to the generation of multi-segment trajectories (Multi_Segment_Cls) using polynomial blends.
 
 The trajectory profile, which contains position, velocity, and acceleration, is generated from input constraints explained in the individual classes.
 
