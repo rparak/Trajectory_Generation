@@ -269,7 +269,6 @@ class Multi_Segment_Cls(object):
             for i, delta_T_i in enumerate(delta_T, start=1):
                 T[i] = T[i-1] + delta_T_i
 
-            
             # Generate position, velocity, and acceleration of a multi-segment trajectory.
             (s, s_dot, s_ddot) = self.__Generate_Polynomial(P, t_blend, T, v)
 
