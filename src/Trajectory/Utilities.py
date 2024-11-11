@@ -432,7 +432,7 @@ class Polynomial_Profile_Cls(object):
             s_dot[:] += (self.__t ** (i - 1)) * C_ii * var_i
 
         # Analytic expression (acceleration):
-        #   s_ddot(t) = 2*c_{2}*t + 6*c_{3}*t^2 + 12*c_{4}*t^3 + 20*c_{5}*t^4
+        #   s_ddot(t) = 2*c_{2} + 6*c_{3}*t^2 + 12*c_{4}*t^3 + 20*c_{5}*t^4
         for i, (C_iii, var_i) in enumerate(zip(C[2:], np.array([2.0, 6.0, 12.0, 20.0], dtype=np.float64)), 
                                               start=2):
             s_ddot[:] += (self.__t ** (i - 2)) * C_iii * var_i
